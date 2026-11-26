@@ -1,0 +1,857 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>GTAS Six Years In</title>
+<meta name="description" content="Independent technical and operational assessment of GTAS at Maldives Customs Service.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,600;12..96,800&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: a fixed 1600x900 stage scaled to the screen; one idea per slide; lagoon-night palette with risk red reserved for "flagged". */
+:root{
+  --ink:#04111a; --deep:#071c28; --panel:#0b2534; --line:rgba(120,220,220,.16);
+  --fg:#e8f3f2; --muted:#8aa5ab; --sea:#3fe0cf; --sea-dim:#1d8f88; --sand:#f3c76f; --risk:#ff4f61; --ok:#6ee7a0;
+  --f-display:"Bricolage Grotesque", "Avenir Next", system-ui, sans-serif;
+  --f-body:"IBM Plex Sans", "Helvetica Neue", system-ui, sans-serif;
+  --f-mono:"IBM Plex Mono", ui-monospace, Menlo, monospace;
+  color-scheme:dark;
+}
+*{box-sizing:border-box}
+html,body{height:100%;margin:0}
+body{background:var(--ink);color:var(--fg);font-family:var(--f-body);overflow:hidden;-webkit-font-smoothing:antialiased}
+#bg{position:fixed;inset:0;width:100%;height:100%;z-index:0}
+.viewport{position:fixed;inset:0;display:grid;place-items:center;z-index:1}
+.stage{position:relative;width:1600px;height:900px;flex:none;transform-origin:center}
+.slide{position:absolute;inset:0;padding:80px 96px 90px;opacity:0;visibility:hidden;transition:opacity .6s ease, visibility 0s .6s, transform .8s cubic-bezier(.2,.7,0,1);transform:translateX(40px) scale(.985)}
+.slide.active{opacity:1;visibility:visible;transform:none;transition:opacity .6s ease, transform .9s cubic-bezier(.2,.7,0,1)}
+.slide.past{transform:translateX(-40px) scale(.985)}
+
+/* reveal: visible at rest, animates in when slide activates */
+.r{--d:0s}
+.slide.active .r{animation:rise .9s cubic-bezier(.2,.7,0,1) var(--d) both}
+@keyframes rise{from{opacity:0;transform:translateY(26px);filter:blur(6px)}to{opacity:1;transform:none;filter:none}}
+
+.eyebrow{font-family:var(--f-mono);font-size:15px;letter-spacing:.22em;text-transform:uppercase;color:var(--sea);display:flex;gap:14px;align-items:center}
+.eyebrow::before{content:"";width:34px;height:1px;background:var(--sea)}
+h1,h2,h3{font-family:var(--f-display);margin:0;text-wrap:balance;letter-spacing:-.02em}
+h2{font-size:64px;line-height:1.02;font-weight:800;margin-top:18px;max-width:1250px}
+h2 em{font-style:normal;color:var(--sea)}
+h2 .red{color:var(--risk)}
+.lede{font-size:23px;line-height:1.5;color:var(--muted);max-width:900px;margin-top:20px}
+.src{position:absolute;left:96px;bottom:36px;font-family:var(--f-mono);font-size:12.5px;color:var(--muted);opacity:.75;letter-spacing:.02em;max-width:1200px}
+.mono{font-family:var(--f-mono)}
+.card{background:linear-gradient(180deg,rgba(15,48,64,.72),rgba(8,30,42,.72));border:1px solid var(--line);border-radius:14px;backdrop-filter:blur(6px)}
+
+/* HUD */
+.hud{position:fixed;z-index:5;left:0;right:0;bottom:0;display:flex;align-items:center;gap:16px;padding:10px max(16px,env(safe-area-inset-right,0px)) calc(10px + env(safe-area-inset-bottom,0px)) max(16px,env(safe-area-inset-left,0px));font-family:var(--f-mono);font-size:12px;color:var(--muted);pointer-events:none}
+.hud .bar{position:absolute;left:0;top:0;height:2px;background:linear-gradient(90deg,var(--sea),var(--sand));transition:width .6s cubic-bezier(.2,.7,0,1)}
+.hud .sp{flex:1}
+.hud button{pointer-events:auto;background:rgba(10,40,55,.6);border:1px solid var(--line);color:var(--fg);font:inherit;padding:7px 11px;border-radius:8px;cursor:pointer}
+.hud button:hover,.hud button:focus-visible{border-color:var(--sea);outline:none}
+#timer.warn{color:var(--sand)}
+.notes{position:fixed;z-index:6;left:50%;bottom:58px;transform:translateX(-50%);width:min(860px,calc(100% - 32px));max-height:42vh;overflow:auto;background:rgba(4,17,26,.94);border:1px solid var(--line);border-radius:14px;padding:18px 22px;font-size:16px;line-height:1.55;box-shadow:0 30px 80px rgba(0,0,0,.5)}
+.notes b{color:var(--sea);font-family:var(--f-mono);font-size:12px;letter-spacing:.15em;text-transform:uppercase;display:block;margin-bottom:6px}
+
+/* ===== S1 hero ===== */
+#s1 .wrap{position:relative;z-index:2;max-width:860px;padding-top:70px}
+#s1 h1{font-size:132px;line-height:.9;font-weight:800;margin-top:26px;letter-spacing:-.045em}
+#s1 h1 span{display:block;background:linear-gradient(92deg,var(--sea),#9ff3e8 45%,var(--sand));-webkit-background-clip:text;background-clip:text;color:transparent}
+#s1 .lede{font-size:24px;max-width:720px}
+#arcs{position:absolute;right:-40px;top:40px;width:900px;height:800px;z-index:1}
+.agenda{display:flex;gap:10px;margin-top:54px;flex-wrap:wrap}
+.agenda span{font-family:var(--f-mono);font-size:13.5px;padding:9px 14px;border:1px solid var(--line);border-radius:999px;color:var(--muted)}
+.agenda span b{color:var(--sea);font-weight:500;margin-right:8px}
+.board{position:absolute;left:96px;bottom:70px;display:flex;gap:28px;font-family:var(--f-mono);font-size:13px;color:var(--muted);z-index:2}
+.board div b{display:block;color:var(--fg);font-size:17px;font-weight:500;margin-top:4px;letter-spacing:.04em}
+
+/* ===== S2 problem ===== */
+#s2 .grid{display:grid;grid-template-columns:520px 1fr;gap:70px;margin-top:44px;align-items:start}
+.big{font-family:var(--f-display);font-weight:800;font-size:124px;line-height:.9;letter-spacing:-.04em;font-variant-numeric:tabular-nums}
+.big small{display:block;font-family:var(--f-body);font-weight:400;font-size:20px;letter-spacing:0;color:var(--muted);margin-top:16px;line-height:1.45}
+.delta{display:inline-block;margin-top:22px;font-family:var(--f-mono);font-size:14px;color:var(--ok);border:1px solid rgba(110,231,160,.3);padding:6px 10px;border-radius:6px}
+.pax{display:grid;grid-template-columns:repeat(25,1fr);gap:7px;padding:26px}
+.pax i{display:block;aspect-ratio:1;border-radius:50%;background:var(--sea-dim);opacity:.55;transition:background .4s, opacity .4s, transform .4s, box-shadow .4s}
+.pax i.scan{background:var(--sea);opacity:1}
+.pax i.clear{background:#24505a;opacity:.45}
+.pax i.hit{background:var(--risk);opacity:1;transform:scale(1.7);box-shadow:0 0 0 4px rgba(255,79,97,.25),0 0 22px var(--risk)}
+.paxhead{display:flex;justify-content:space-between;padding:18px 26px 0;font-family:var(--f-mono);font-size:13px;color:var(--muted)}
+.paxhead b{color:var(--fg);font-weight:500}
+.paxfoot{display:flex;gap:26px;padding:0 26px 22px;font-family:var(--f-mono);font-size:13px;color:var(--muted)}
+.paxfoot span::before{content:"";display:inline-block;width:9px;height:9px;border-radius:50%;margin-right:8px;background:currentColor;vertical-align:1px}
+.tag{font-family:var(--f-display);font-size:44px;font-weight:800;margin-top:26px;letter-spacing:-.02em}
+.tag em{font-style:normal;color:var(--risk)}
+
+/* ===== S3 three pillars ===== */
+.cols3{display:grid;grid-template-columns:repeat(3,1fr);gap:26px;margin-top:54px}
+.pillar{padding:34px 32px 36px;min-height:400px;position:relative;overflow:hidden}
+.pillar .k{font-family:var(--f-mono);font-size:13px;letter-spacing:.18em;text-transform:uppercase;color:var(--sand)}
+.pillar h3{font-size:34px;margin-top:16px;line-height:1.08}
+.pillar p{font-size:18.5px;line-height:1.55;color:var(--muted);margin:16px 0 0}
+.pillar p b{color:var(--fg);font-weight:500}
+.pillar blockquote{margin:22px 0 0;padding-left:18px;border-left:2px solid var(--risk);font-family:var(--f-display);font-size:24px;line-height:1.25;color:var(--fg)}
+.pillar .glyph{position:absolute;right:-20px;bottom:-30px;font-family:var(--f-display);font-weight:800;font-size:190px;color:rgba(63,224,207,.06);line-height:1}
+
+/* ===== S4 timeline ===== */
+.tl{position:relative;margin-top:110px;height:420px}
+.tl svg{position:absolute;left:0;top:0;width:100%;height:100%;overflow:visible}
+.tl .track{stroke:var(--line);stroke-width:2;fill:none}
+.tl .prog{stroke:url(#tlg);stroke-width:3;fill:none;stroke-dasharray:1500;stroke-dashoffset:1500}
+.slide.active .tl .prog{animation:draw 3.2s .3s cubic-bezier(.5,0,.2,1) forwards}
+@keyframes draw{to{stroke-dashoffset:0}}
+.ev{position:absolute;width:170px;transform:translateX(-50%)}
+.ev .dot{width:14px;height:14px;border-radius:50%;background:var(--ink);border:2px solid var(--sea);margin:0 auto;position:relative;z-index:2}
+.ev.key .dot{background:var(--sea);box-shadow:0 0 0 6px rgba(63,224,207,.18),0 0 26px var(--sea)}
+.ev.win .dot{border-color:var(--risk);background:var(--risk);box-shadow:0 0 0 6px rgba(255,79,97,.18),0 0 26px var(--risk)}
+.ev .when{font-family:var(--f-mono);font-size:13px;color:var(--sea);text-align:center;margin-top:16px;letter-spacing:.06em}
+.ev .what{font-size:16px;line-height:1.4;text-align:center;margin-top:8px;color:var(--fg)}
+.ev.up{bottom:calc(50% - 7px)} .ev.up .when{margin-top:0;margin-bottom:8px} .ev.up{display:flex;flex-direction:column-reverse}
+.ev.up .what{margin-top:0;margin-bottom:6px}
+.ev.down{top:calc(50% - 7px)}
+
+/* ===== S5 data streams ===== */
+.two{display:grid;grid-template-columns:1fr 1fr;gap:30px;margin-top:44px}
+.stream{padding:28px 30px;min-height:540px}
+.stream .top{display:flex;justify-content:space-between;align-items:baseline}
+.stream h3{font-size:40px}
+.stream .std{font-family:var(--f-mono);font-size:13px;color:var(--sand);letter-spacing:.08em}
+.stream .says{font-size:19px;color:var(--muted);margin:8px 0 18px}
+.edi{font-family:var(--f-mono);font-size:15px;line-height:1.62;color:#a9e9e1;background:rgba(2,12,18,.6);border-radius:10px;padding:18px 20px;height:360px;overflow:hidden;white-space:pre;border:1px solid var(--line)}
+.edi .seg{color:var(--sand)}
+.edi .caret{display:inline-block;width:9px;height:17px;background:var(--sea);vertical-align:-3px;animation:blink 1s steps(1) infinite}
+@keyframes blink{50%{opacity:0}}
+.pnr{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.pnr div{background:rgba(2,12,18,.55);border:1px solid var(--line);border-radius:10px;padding:13px 15px}
+.pnr div span{display:block;font-family:var(--f-mono);font-size:11.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
+.pnr div b{display:block;font-weight:500;font-size:18px;margin-top:5px}
+.pnr div.flag{border-color:rgba(255,79,97,.55);background:rgba(255,79,97,.08)}
+.pnr div.flag b{color:#ffb3bb}
+.slide.active .pnr div{animation:rise .7s cubic-bezier(.2,.7,0,1) both}
+.punch{margin-top:30px;font-family:var(--f-display);font-size:34px;font-weight:600;letter-spacing:-.01em}
+.punch em{font-style:normal;color:var(--sea)}
+
+/* ===== S6 architecture ===== */
+.arch{position:absolute;left:96px;right:96px;top:250px;height:520px}
+.arch svg{width:100%;height:100%;overflow:visible}
+.node rect{fill:rgba(11,37,52,.92);stroke:var(--line);stroke-width:1.2}
+.node.core rect{stroke:rgba(63,224,207,.55)}
+.node.out rect{stroke:rgba(243,199,111,.55)}
+.node text{fill:var(--fg);font-family:var(--f-body);font-size:17px;font-weight:500}
+.node text.s{fill:var(--muted);font-family:var(--f-mono);font-size:12.5px;font-weight:400}
+.flow{fill:none;stroke:var(--sea);stroke-width:2;stroke-dasharray:6 10;opacity:.75}
+.slide.active .flow{animation:flow 1.1s linear infinite}
+@keyframes flow{to{stroke-dashoffset:-32}}
+.flow.amber{stroke:var(--sand)}
+.packet{fill:var(--sea);filter:drop-shadow(0 0 6px var(--sea))}
+.packet.red{fill:var(--risk);filter:drop-shadow(0 0 8px var(--risk))}
+.zone{fill:rgba(63,224,207,.035);stroke:rgba(63,224,207,.25);stroke-dasharray:4 6}
+.zonelbl{fill:var(--sea);font-family:var(--f-mono);font-size:12px;letter-spacing:.18em}
+.chips{position:absolute;left:96px;bottom:70px;display:flex;gap:10px;flex-wrap:wrap}
+.chips span{font-family:var(--f-mono);font-size:13px;padding:7px 12px;border-radius:7px;background:rgba(63,224,207,.07);border:1px solid var(--line);color:#bfeee8}
+
+/* ===== S7 rule engine ===== */
+#s7 .grid{display:grid;grid-template-columns:690px 1fr;gap:56px;margin-top:40px}
+.rule{padding:28px 30px}
+.rule .rh{display:flex;justify-content:space-between;font-family:var(--f-mono);font-size:13px;color:var(--muted)}
+.rule .rh b{color:var(--sand);font-weight:500}
+.rule h3{font-size:28px;margin:10px 0 20px}
+.cond{display:flex;align-items:center;gap:14px;padding:13px 16px;border:1px solid var(--line);border-radius:10px;margin-top:10px;font-size:17.5px;background:rgba(2,12,18,.4)}
+.cond .ck{width:24px;height:24px;border-radius:50%;border:1.5px solid var(--muted);flex:none;display:grid;place-items:center;font-size:13px;color:transparent;transition:all .35s}
+.cond .v{margin-left:auto;font-family:var(--f-mono);font-size:14px;color:var(--muted)}
+.cond.on{border-color:rgba(255,79,97,.5);background:rgba(255,79,97,.07)}
+.cond.on .ck{background:var(--risk);border-color:var(--risk);color:#fff;box-shadow:0 0 16px var(--risk)}
+.cond.on .v{color:#ffb3bb}
+.meter{margin-top:22px;height:12px;border-radius:99px;background:rgba(255,255,255,.06);overflow:hidden}
+.meter i{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--sand),var(--risk));transition:width .5s cubic-bezier(.2,.7,0,1)}
+.verdict{margin-top:18px;display:flex;align-items:center;gap:14px;font-family:var(--f-mono);font-size:15px;color:var(--muted);opacity:.3;transition:opacity .4s}
+.verdict.on{opacity:1;color:var(--fg)}
+.verdict .pill{background:var(--risk);color:#fff;padding:7px 12px;border-radius:7px;font-weight:500;letter-spacing:.1em}
+.caps{display:grid;gap:14px}
+.cap{display:grid;grid-template-columns:44px 1fr;gap:16px;padding:16px 4px;border-bottom:1px solid var(--line)}
+.cap .n{font-family:var(--f-mono);color:var(--sea);font-size:14px;padding-top:5px}
+.cap h4{margin:0;font-family:var(--f-display);font-size:24px;font-weight:600}
+.cap p{margin:5px 0 0;color:var(--muted);font-size:16.5px;line-height:1.45}
+
+/* ===== S8 stats ===== */
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:22px;margin-top:56px}
+.stat{padding:30px 28px 30px}
+.stat .num{font-family:var(--f-display);font-weight:800;font-size:92px;line-height:.95;letter-spacing:-.04em;font-variant-numeric:tabular-nums}
+.stat .num sup{font-size:40px;vertical-align:28px;margin-left:2px;color:var(--sea)}
+.stat p{margin:14px 0 0;color:var(--muted);font-size:17.5px;line-height:1.45}
+.stat p b{color:var(--fg);font-weight:500}
+.stat.hot .num{color:var(--risk)}
+.wins{display:grid;grid-template-columns:repeat(4,1fr);gap:22px;margin-top:30px}
+.wins div{padding:18px 0 0;border-top:1px solid var(--sea-dim)}
+.wins h4{margin:0;font-family:var(--f-display);font-size:22px;font-weight:600}
+.wins p{margin:6px 0 0;color:var(--muted);font-size:16px;line-height:1.45}
+
+/* ===== S9 matrix ===== */
+.matrix{display:grid;grid-template-columns:repeat(4,1fr);gap:20px;margin-top:44px}
+.mcol h3{font-family:var(--f-mono);font-size:14px;letter-spacing:.2em;text-transform:uppercase;color:var(--sea);font-weight:500;padding-bottom:14px;border-bottom:1px solid var(--line)}
+.lim{margin-top:14px;padding:16px 18px;border-radius:12px;border:1px solid var(--line);background:rgba(11,37,52,.6);position:relative}
+.lim h4{margin:0;font-size:18.5px;font-weight:600;line-height:1.25;padding-right:26px}
+.lim p{margin:6px 0 0;font-size:14.5px;color:var(--muted);line-height:1.45}
+.lim::after{content:"";position:absolute;right:16px;top:20px;width:10px;height:10px;border-radius:50%;background:var(--sand)}
+.lim.h{border-color:rgba(255,79,97,.35)}
+.lim.h::after{background:var(--risk);box-shadow:0 0 12px var(--risk)}
+.legend{position:absolute;right:96px;top:96px;display:flex;gap:20px;font-family:var(--f-mono);font-size:13px;color:var(--muted)}
+.legend span::before{content:"";display:inline-block;width:10px;height:10px;border-radius:50%;margin-right:8px;vertical-align:0}
+.legend .a::before{background:var(--risk)} .legend .b::before{background:var(--sand)}
+
+/* ===== S10 blind spots ===== */
+.spots{display:grid;grid-template-columns:repeat(3,1fr);gap:26px;margin-top:50px}
+.spot{padding:30px;min-height:470px;display:flex;flex-direction:column}
+.spot .k{font-family:var(--f-mono);font-size:13px;letter-spacing:.18em;color:var(--risk);text-transform:uppercase}
+.spot h3{font-size:40px;margin-top:12px;line-height:1.02}
+.spot p{color:var(--muted);font-size:18px;line-height:1.5;margin:14px 0 0}
+.spot .vis{margin-top:auto;height:170px;border-radius:10px;background:rgba(2,12,18,.6);border:1px solid var(--line);position:relative;overflow:hidden}
+.term{font-family:var(--f-mono);font-size:14.5px;line-height:1.7;padding:16px 18px;color:#a9e9e1;white-space:pre}
+.term .e{color:var(--risk)} .term .d{color:var(--muted)}
+.wave{position:absolute;inset:0;width:100%;height:100%}
+
+/* ===== S11 map ===== */
+.map{margin-top:40px;display:grid;gap:12px}
+.mrow{display:grid;grid-template-columns:430px 1fr 520px;align-items:center;gap:0}
+.mrow .l,.mrow .t{padding:15px 20px;border-radius:11px;font-size:18.5px}
+.mrow .l{border:1px solid rgba(255,79,97,.35);background:rgba(255,79,97,.06);color:#ffd3d8}
+.mrow .t{border:1px solid rgba(63,224,207,.4);background:rgba(63,224,207,.07);font-weight:600;display:flex;justify-content:space-between;gap:12px}
+.mrow .t small{font-family:var(--f-mono);font-weight:400;font-size:12.5px;color:var(--muted);align-self:center;white-space:nowrap}
+.mrow .wire{height:2px;position:relative;background:linear-gradient(90deg,rgba(255,79,97,.6),rgba(63,224,207,.8));transform-origin:left;margin:0 -1px}
+.slide.active .mrow .wire{animation:wire .7s cubic-bezier(.2,.7,0,1) var(--d) both}
+@keyframes wire{from{transform:scaleX(0)}to{transform:scaleX(1)}}
+.mrow .wire::after{content:"";position:absolute;right:-1px;top:-4px;width:10px;height:10px;border-radius:50%;background:var(--sea);box-shadow:0 0 12px var(--sea)}
+
+/* ===== S12 IMUGA ===== */
+.cases{display:grid;grid-template-columns:1fr 1fr;gap:30px;margin-top:44px}
+.case{padding:26px 28px}
+.case .hd{font-family:var(--f-mono);font-size:13px;color:var(--muted);letter-spacing:.1em;display:flex;justify-content:space-between}
+.case .hd b{color:var(--risk);font-weight:500}
+.vs{display:grid;grid-template-columns:1fr 56px 1fr;align-items:stretch;margin-top:18px}
+.vs > div{border:1px solid var(--line);border-radius:11px;padding:16px 18px;background:rgba(2,12,18,.45)}
+.vs span{font-family:var(--f-mono);font-size:11.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--sea)}
+.vs p{margin:8px 0 0;font-size:18px;line-height:1.4}
+.vs .x{display:grid;place-items:center;font-family:var(--f-display);font-size:32px;color:var(--risk);border:none;background:none;padding:0}
+.slide.active .vs .x{animation:pulse 1.6s ease-in-out 1s infinite}
+@keyframes pulse{50%{transform:scale(1.35);text-shadow:0 0 18px var(--risk)}}
+.case .out{margin-top:16px;font-size:17px;color:var(--muted)}
+.case .out b{color:var(--fg);font-weight:500}
+.why{margin-top:30px;display:flex;gap:40px;font-size:18.5px;color:var(--muted)}
+.why b{color:var(--sea);font-family:var(--f-display);font-size:30px;display:block;font-weight:800}
+
+/* ===== S13 enclave ===== */
+#s13 .grid{display:grid;grid-template-columns:860px 1fr;gap:50px;margin-top:34px}
+#enclave{width:860px;height:500px;display:block}
+.pts{display:grid;gap:16px}
+.pt{padding:18px 20px;border-left:2px solid var(--sea);background:rgba(63,224,207,.04);border-radius:0 10px 10px 0}
+.pt h4{margin:0;font-family:var(--f-display);font-size:22px;font-weight:600}
+.pt p{margin:5px 0 0;color:var(--muted);font-size:16px;line-height:1.45}
+.pt.warn{border-left-color:var(--sand);background:rgba(243,199,111,.05)}
+.pt.warn h4{color:var(--sand)}
+
+/* ===== S14 platform ===== */
+.plat{position:absolute;left:96px;right:96px;top:240px;height:560px}
+.plat svg{width:100%;height:100%;overflow:visible}
+.thesis{position:absolute;right:96px;top:112px;text-align:right;font-family:var(--f-display);font-weight:800;font-size:30px;line-height:1.15}
+.thesis em{font-style:normal;color:var(--ok)} .thesis i{font-style:normal;color:var(--risk)}
+
+/* ===== S15 roadmap ===== */
+.road{display:grid;grid-template-columns:repeat(3,1fr);gap:0;margin-top:50px;position:relative}
+.phase{padding:0 30px 0 0;position:relative}
+.phase .bar{height:8px;border-radius:99px;background:rgba(255,255,255,.06);margin-bottom:26px;overflow:hidden;margin-right:14px}
+.phase .bar i{display:block;height:100%;width:100%;transform-origin:left;background:linear-gradient(90deg,var(--sea),var(--sand))}
+.slide.active .phase .bar i{animation:wire 1s cubic-bezier(.2,.7,0,1) var(--d) both}
+.phase .when{font-family:var(--f-mono);font-size:13px;color:var(--sea);letter-spacing:.14em}
+.phase h3{font-size:44px;margin-top:8px}
+.phase ul{list-style:none;padding:0;margin:18px 0 0;display:grid;gap:10px}
+.phase li{font-size:17.5px;line-height:1.4;padding-left:22px;position:relative;color:#cfe3e2}
+.phase li::before{content:"";position:absolute;left:0;top:10px;width:8px;height:8px;border:1.5px solid var(--sea);border-radius:2px;transform:rotate(45deg)}
+.kpis{margin-top:44px;display:grid;grid-template-columns:auto repeat(5,1fr);gap:14px;align-items:stretch}
+.kpis .lbl{font-family:var(--f-mono);font-size:13px;letter-spacing:.18em;color:var(--sand);text-transform:uppercase;align-self:center;padding-right:10px}
+.kpis div:not(.lbl){border:1px solid var(--line);border-radius:10px;padding:13px 15px;font-size:15.5px;line-height:1.35;background:rgba(11,37,52,.5)}
+.kpis div b{display:block;font-family:var(--f-mono);font-size:12px;color:var(--muted);font-weight:400;margin-bottom:4px}
+
+/* ===== S16 close ===== */
+.msgs{display:grid;gap:22px;margin-top:50px;max-width:1250px}
+.msg{display:grid;grid-template-columns:90px 1fr;gap:20px;align-items:baseline;padding-bottom:22px;border-bottom:1px solid var(--line)}
+.msg .n{font-family:var(--f-display);font-weight:800;font-size:56px;color:var(--sea);line-height:1}
+.msg h3{font-size:38px;line-height:1.1}
+.msg p{margin:8px 0 0;font-size:19px;color:var(--muted)}
+.thanks{position:absolute;right:96px;bottom:80px;text-align:right}
+.thanks b{font-family:var(--f-display);font-size:64px;font-weight:800;display:block;letter-spacing:-.03em}
+.thanks span{font-family:var(--f-mono);font-size:14px;color:var(--muted);letter-spacing:.14em}
+
+@media (prefers-reduced-motion: reduce){
+  *,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}
+}
+</style>
+</head>
+<body>
+<canvas id="bg" aria-hidden="true"></canvas>
+
+<div class="viewport"><div class="stage" id="stage">
+
+<!-- 1 -->
+<section class="slide" id="s1" data-t="30" data-notes="Good morning. I was asked to independently assess GTAS. My headline: GTAS is not a proposal for Maldives Customs; it has been live since June 2019. So this is a six-year review. What it delivered, where it has stalled, and what MCS should build next. Five parts, about twenty minutes.">
+  <canvas id="arcs" aria-hidden="true"></canvas>
+  <div class="wrap">
+    <div class="eyebrow r">Independent assessment · Maldives Customs Service</div>
+    <h1 class="r" style="--d:.15s">GTAS,<span>six years in.</span></h1>
+    <p class="lede r" style="--d:.35s">A technical and operational review of the Global Travel Assessment System at Velana, and a blueprint for what Maldives Customs should build next.</p>
+    <div class="agenda r" style="--d:.55s">
+      <span><b>01</b>Background</span><span><b>02</b>Capabilities</span><span><b>03</b>Evaluation</span><span><b>04</b>Disruptive tech</span><span><b>05</b>Future system</span>
+    </div>
+  </div>
+  <div class="board r" style="--d:.8s">
+    <div>GATEWAY<b>MLE · VELANA</b></div>
+    <div>SYSTEM<b>GTAS · WCO / CBP</b></div>
+    <div>LIVE SINCE<b>23 JUN 2019</b></div>
+    <div>STATUS<b style="color:var(--sand)">UNDER REVIEW</b></div>
+  </div>
+</section>
+
+<!-- 2 -->
+<section class="slide" id="s2" data-t="75" data-notes="Start with the problem. 2.25 million tourist arrivals last year, up almost 10 percent. A single wide-body from Dubai lands with 350 people. Officers can search a handful. Without data, that choice is instinct. GTAS exists to make that choice from evidence, hours before landing. Find the few, clear the rest. That is also a tourism argument: every legitimate guest you do not stop is a better arrival.">
+  <div class="eyebrow r">The problem</div>
+  <h2 class="r" style="--d:.1s">One flight. 350 passengers. <em>Which four do you stop?</em></h2>
+  <div class="grid">
+    <div class="r" style="--d:.25s">
+      <div class="big"><span data-count="2246516">2,246,516</span><small>tourist arrivals in 2025. Almost all by air, most through a single gateway, and almost all of them low risk.</small></div>
+      <div class="delta">▲ 9.8% on 2024</div>
+      <div class="tag"><em>Find the few.</em><br>Clear the rest.</div>
+    </div>
+    <div class="card r" style="--d:.4s">
+      <div class="paxhead"><span>EK652 · DXB → MLE · illustrative</span><b id="paxstat">350 passengers</b></div>
+      <div class="pax" id="pax"></div>
+      <div class="paxfoot"><span style="color:#2f6e78">cleared before landing</span><span style="color:var(--risk)">flagged for officer</span></div>
+    </div>
+  </div>
+  <div class="src">Source: Ministry of Tourism, tourist arrivals as of 31 Dec 2025 (estimates based on IMUGA data).</div>
+</section>
+
+<!-- 3 -->
+<section class="slide" id="s3" data-t="75" data-notes="Why GTAS exists. Security Council Resolutions 2178 and 2396 oblige states to use API and build PNR capacity, driven by foreign terrorist fighter travel, which the Maldives knows well. Small administrations could not buy commercial systems, so CBP donated GTAS to the WCO, who give it free to members. Japan funded the Maldives rollout through the WCO Asia/Pacific Security Project. And the starting point was honest: MCS had no API, no PNR, manual selection.">
+  <div class="eyebrow r">01 · Introduction and background</div>
+  <h2 class="r" style="--d:.1s">A global mandate met a <em>small-administration</em> reality.</h2>
+  <div class="cols3">
+    <div class="card pillar r" style="--d:.25s">
+      <div class="k">The mandate</div>
+      <h3>UN Security Council Resolutions 2178 &amp; 2396</h3>
+      <p>States must use <b>Advance Passenger Information</b> and build the capability to collect and use <b>Passenger Name Record</b> data to detect terrorist and criminal travel.</p>
+      <div class="glyph">UN</div>
+    </div>
+    <div class="card pillar r" style="--d:.4s">
+      <div class="k">The partnership</div>
+      <h3>WCO · Japan · US CBP</h3>
+      <p><b>US CBP</b> built GTAS and donated it to the <b>WCO</b>, which supplies it free to members. <b>Japan</b> funded the Maldives rollout through the WCO Asia/Pacific Security Project.</p>
+      <div class="glyph">$0</div>
+    </div>
+    <div class="card pillar r" style="--d:.55s">
+      <div class="k">The starting point</div>
+      <h3>MCS before 2019</h3>
+      <p>No API. No PNR. Passengers <b>selected on a manual risk basis</b> at the arrival hall.</p>
+      <blockquote>“Maldives lack the capacity to build our own system.”</blockquote>
+      <div class="glyph">0</div>
+    </div>
+  </div>
+  <div class="src">Sources: WCO News 90 (Oct 2019); MCS presentation, M. Afzal, Chief Customs Officer; WCO newsroom (Jul 2019).</div>
+</section>
+
+<!-- 4 -->
+<section class="slide" id="s4" data-t="75" data-notes="Delivery was fast. Eighteen months from a workshop in Bangkok to live data. The critical step was legal: the old framework never mentioned PNR, so a new regulation was gazetted in August 2018. Go-live 23 June 2019. And within ten weeks, two South American drug couriers flagged by GTAS were intercepted. In 2021 an MoU opened access to Immigration and Police. Hold on to that: since 2021 there is little public evidence of further development.">
+  <div class="eyebrow r">01 · How MCS got here</div>
+  <h2 class="r" style="--d:.1s">Eighteen months from workshop to <em>first interception.</em></h2>
+  <div class="tl">
+    <svg viewBox="0 0 1408 420" preserveAspectRatio="none" aria-hidden="true">
+      <defs><linearGradient id="tlg" x1="0" x2="1"><stop offset="0" stop-color="#3fe0cf"/><stop offset=".8" stop-color="#3fe0cf"/><stop offset="1" stop-color="#f3c76f"/></linearGradient></defs>
+      <line class="track" x1="0" y1="210" x2="1408" y2="210"/>
+      <path class="prog" d="M0 210 H1408"/>
+    </svg>
+    <div class="ev up r" style="left:4%;--d:.3s"><div class="dot"></div><div class="when">OCT 2017</div><div class="what">WCO security workshop, Bangkok</div></div>
+    <div class="ev down r" style="left:17%;--d:.6s"><div class="dot"></div><div class="when">MAR 2018</div><div class="what">WCO technical mission assesses MCS</div></div>
+    <div class="ev up r" style="left:30%;--d:.9s"><div class="dot"></div><div class="when">AUG 2018</div><div class="what">API/PNR regulation gazetted</div></div>
+    <div class="ev down r" style="left:43%;--d:1.2s"><div class="dot"></div><div class="when">20 JUN 2019</div><div class="what">First test message from Etihad</div></div>
+    <div class="ev up key r" style="left:56%;--d:1.5s"><div class="dot"></div><div class="when">23 JUN 2019</div><div class="what"><b>Go-live.</b> First live API from Maldivian</div></div>
+    <div class="ev down r" style="left:68%;--d:1.8s"><div class="dot"></div><div class="when">AUG 2019</div><div class="what">First PNR received (AirAsia)</div></div>
+    <div class="ev up win r" style="left:81%;--d:2.1s"><div class="dot"></div><div class="when">1 SEP 2019</div><div class="what">Two GTAS-flagged drug couriers intercepted</div></div>
+    <div class="ev down r" style="left:95%;--d:2.4s"><div class="dot"></div><div class="when">MAY 2021</div><div class="what">MoU: Customs, Immigration, Police share access</div></div>
+  </div>
+  <div class="src">Sources: WCO News 90; MCS presentation (M. Afzal); Times of Addu, 5 May 2021.</div>
+</section>
+
+<!-- 5 -->
+<section class="slide" id="s5" data-t="90" data-notes="Two data streams feed GTAS. API is the passport page, captured at check-in, in the UN/EDIFACT PAXLST format. Highly reliable, but it only tells you who. PNR is the booking: when it was made, how it was paid, contact details, route, bags, who you travel with. Self-declared, but rich in behaviour. Pay attention to the red fields: cash payment, booked 30 hours before departure, two-night stay. That is what a targeting officer looks for.">
+  <div class="eyebrow r">01 · Technical background · the inputs</div>
+  <h2 class="r" style="--d:.1s">API tells you <em>who.</em> PNR tells you <em>how they travel.</em></h2>
+  <div class="two">
+    <div class="card stream r" style="--d:.25s">
+      <div class="top"><h3>API</h3><span class="std">UN/EDIFACT PAXLST</span></div>
+      <div class="says">Passport data captured at check-in. Verified, but thin.</div>
+      <div class="edi" id="edi"></div>
+    </div>
+    <div class="card stream r" style="--d:.4s">
+      <div class="top"><h3>PNR</h3><span class="std">PNRGOV · pushed from 72h out</span></div>
+      <div class="says">The booking record. Self-declared, but full of behaviour.</div>
+      <div class="pnr">
+        <div style="animation-delay:.5s"><span>Booked</span><b>30 h before departure</b></div>
+        <div class="flag" style="animation-delay:.65s"><span>Payment</span><b>Cash · travel agency</b></div>
+        <div style="animation-delay:.8s"><span>Route</span><b>GRU → DOH → MLE</b></div>
+        <div class="flag" style="animation-delay:.95s"><span>Stay</span><b>2 nights · return booked</b></div>
+        <div style="animation-delay:1.1s"><span>Travelling</span><b>Alone · 1 checked bag</b></div>
+        <div class="flag" style="animation-delay:1.25s"><span>Accommodation</span><b>None recorded</b></div>
+        <div style="animation-delay:1.4s"><span>Contact</span><b>Mobile shared with 2 other PNRs</b></div>
+        <div style="animation-delay:1.55s"><span>Seat</span><b>Requested at check-in</b></div>
+      </div>
+    </div>
+  </div>
+  <div class="src">Illustrative records with fictional data. Standards: WCO/IATA/ICAO API and PNR Guidelines; ICAO Annex 9.</div>
+</section>
+
+<!-- 6 -->
+<section class="slide" id="s6" data-t="90" data-notes="Architecture. Airlines push messages to a contracted data-service provider, which delivers to GTAS hosted locally at MCS. A loader parses PAXLST and PNRGOV into a relational store. The risk layer has three engines: Drools business rules, fuzzy watchlist matching, and Neo4j link analysis, with Elasticsearch and Kibana for search and dashboards. Analysts at the MCS Targeting Center review hits and refer passengers to officers on the floor. Key point: GTAS does not connect to airlines itself. That data contract is the lifeline.">
+  <div class="eyebrow r">01 · Technical background · the architecture</div>
+  <h2 class="r" style="--d:.1s">From airline message to <em>officer at the belt.</em></h2>
+  <div class="arch r" style="--d:.25s">
+    <svg viewBox="0 0 1408 520" aria-hidden="true">
+      <rect class="zone" x="560" y="10" width="560" height="500" rx="18"/>
+      <text class="zonelbl" x="584" y="40">GTAS · HOSTED LOCALLY AT MCS</text>
+      <!-- flows -->
+      <path class="flow" id="f1" d="M190 260 H262"/>
+      <path class="flow" id="f2" d="M462 260 H600"/>
+      <path class="flow" d="M770 260 C800 260 800 110 840 110"/>
+      <path class="flow" d="M770 260 H840"/>
+      <path class="flow" d="M770 260 C800 260 800 410 840 410"/>
+      <path class="flow amber" d="M1060 110 C1110 110 1110 260 1150 260"/>
+      <path class="flow amber" d="M1060 260 H1150"/>
+      <path class="flow amber" d="M1060 410 C1110 410 1110 260 1150 260"/>
+      <path class="flow amber" id="f9" d="M1290 330 V400"/>
+      <circle r="6" class="packet"><animateMotion dur="2.2s" repeatCount="indefinite" path="M60 260 H600 H770 C800 260 800 110 840 110"/></circle>
+      <circle r="6" class="packet"><animateMotion dur="2.6s" begin=".7s" repeatCount="indefinite" path="M60 260 H600 H840"/></circle>
+      <circle r="7" class="packet red"><animateMotion dur="3.4s" begin="1.2s" repeatCount="indefinite" path="M770 260 C800 260 800 410 840 410 H1060 C1110 410 1110 260 1150 260 H1290 V460"/></circle>
+      <g class="node"><rect x="0" y="200" width="190" height="120" rx="14"/><text x="22" y="250">Airlines</text><text class="s" x="22" y="276">DCS → API</text><text class="s" x="22" y="296">Reservations → PNR</text></g>
+      <g class="node"><rect x="262" y="200" width="200" height="120" rx="14"/><text x="284" y="250">Data service</text><text class="s" x="284" y="276">contracted provider</text><text class="s" x="284" y="296">3-year term (2019)</text></g>
+      <g class="node core"><rect x="600" y="200" width="170" height="120" rx="14"/><text x="622" y="250">Loader</text><text class="s" x="622" y="276">PAXLST · PNRGOV</text><text class="s" x="622" y="296">→ MariaDB</text></g>
+      <g class="node core"><rect x="840" y="60" width="220" height="100" rx="14"/><text x="862" y="104">Rules engine</text><text class="s" x="862" y="130">Drools · analyst rules</text></g>
+      <g class="node core"><rect x="840" y="210" width="220" height="100" rx="14"/><text x="862" y="254">Watchlists</text><text class="s" x="862" y="280">fuzzy name matching</text></g>
+      <g class="node core"><rect x="840" y="360" width="220" height="100" rx="14"/><text x="862" y="404">Link analysis</text><text class="s" x="862" y="430">Neo4j graph</text></g>
+      <g class="node out"><rect x="1150" y="190" width="258" height="140" rx="14"/><text x="1172" y="236">Targeting Center</text><text class="s" x="1172" y="262">hits ranked for analysts</text><text class="s" x="1172" y="282">Angular UI · Kibana</text></g>
+      <g class="node out"><rect x="1150" y="400" width="258" height="100" rx="14"/><text x="1172" y="444">Officer at Velana</text><text class="s" x="1172" y="470">referral · search · outcome</text></g>
+    </svg>
+  </div>
+  <div class="chips r" style="--d:.5s"><span>Java · Spring</span><span>Angular</span><span>MariaDB</span><span>Drools</span><span>Neo4j</span><span>Elasticsearch · Kibana</span><span>ActiveMQ</span><span>Docker</span><span>On-premise</span></div>
+</section>
+
+<!-- 7 -->
+<section class="slide" id="s7" data-t="90" data-notes="What it does operationally. The heart is the user-defined rule. An analyst encodes targeting knowledge, for example short-notice solo travel, cash payment, a source route, no accommodation. GTAS evaluates every passenger on every flight against every rule, and a match becomes a ranked hit. Around that: fuzzy watchlist matching, link analysis to expose networks, flight and passenger views, historical search, and access control with audit.">
+  <div class="eyebrow r">02 · Existing functionality</div>
+  <h2 class="r" style="--d:.1s">Analyst knowledge, <em>run against every passenger.</em></h2>
+  <div class="grid">
+    <div class="card rule r" style="--d:.25s">
+      <div class="rh"><span>USER-DEFINED RULE · UDR-117</span><b>NARCOTICS · INBOUND</b></div>
+      <h3>Short-notice courier profile</h3>
+      <div class="cond"><span class="ck">✓</span>Booked less than 48 h before departure<span class="v">30 h</span></div>
+      <div class="cond"><span class="ck">✓</span>Ticket paid in cash<span class="v">CASH</span></div>
+      <div class="cond"><span class="ck">✓</span>Itinerary touches a source region<span class="v">GRU</span></div>
+      <div class="cond"><span class="ck">✓</span>Stay of 3 nights or fewer, no resort<span class="v">2 N</span></div>
+      <div class="cond"><span class="ck">✓</span>Phone number shared with other bookings<span class="v">×2</span></div>
+      <div class="meter"><i id="meter"></i></div>
+      <div class="verdict" id="verdict"><span class="pill">HIT</span> Refer to arrivals officer · flight QR674 · ETA 08:40</div>
+    </div>
+    <div class="caps">
+      <div class="cap r" style="--d:.3s"><div class="n">A</div><div><h4>Rules engine</h4><p>Analysts write risk rules without code. Every passenger is scored against them.</p></div></div>
+      <div class="cap r" style="--d:.4s"><div class="n">B</div><div><h4>Watchlist matching</h4><p>Fuzzy matching on names, dates of birth and documents.</p></div></div>
+      <div class="cap r" style="--d:.5s"><div class="n">C</div><div><h4>Link analysis</h4><p>Shared phones, emails, cards and addresses expose networks.</p></div></div>
+      <div class="cap r" style="--d:.6s"><div class="n">D</div><div><h4>Hit queue and vetting</h4><p>Ranked hits per flight, reviewed before the aircraft lands.</p></div></div>
+      <div class="cap r" style="--d:.7s"><div class="n">E</div><div><h4>Search and governance</h4><p>Historical queries, role-based access, audit logs, data masking.</p></div></div>
+    </div>
+  </div>
+  <div class="src">Illustrative rule and passenger. Functions per GTAS documentation and WCO materials.</div>
+</section>
+
+<!-- 8 -->
+<section class="slide" id="s8" data-t="60" data-notes="What it delivered. 85 percent of airlines sending API within months. 24 officers trained across four agencies. Three agencies with direct access after the 2021 MoU. And proof of value in week ten. Its genuine strengths: screening happens before arrival, the data stays in the Maldives, there is no licence cost, and it created a multi-agency habit.">
+  <div class="eyebrow r">02 · Operational capability</div>
+  <h2 class="r" style="--d:.1s">It worked. <em>Quickly.</em></h2>
+  <div class="stats">
+    <div class="card stat r" style="--d:.2s"><div class="num"><span data-count="85">85</span><sup>%</sup></div><p>of airlines sending <b>API</b> within months of go-live</p></div>
+    <div class="card stat r" style="--d:.3s"><div class="num"><span data-count="24">24</span></div><p>officers trained across <b>Customs, Immigration, Police and Defence</b></p></div>
+    <div class="card stat r" style="--d:.4s"><div class="num"><span data-count="3">3</span></div><p>agencies with <b>direct access</b> under the 2021 MoU</p></div>
+    <div class="card stat hot r" style="--d:.5s"><div class="num"><span data-count="10">10</span><sup style="color:var(--risk)">wks</sup></div><p>from go-live to the <b>first GTAS-flagged interception</b></p></div>
+  </div>
+  <div class="wins">
+    <div class="r" style="--d:.6s"><h4>Pre-arrival</h4><p>Risk assessed before the aircraft lands, not at the counter.</p></div>
+    <div class="r" style="--d:.7s"><h4>Sovereign</h4><p>Hosted locally. Passenger data stays in the Maldives.</p></div>
+    <div class="r" style="--d:.8s"><h4>Zero licence cost</h4><p>Free to WCO members. Donor-funded rollout.</p></div>
+    <div class="r" style="--d:.9s"><h4>Multi-agency</h4><p>One data picture shared by border agencies.</p></div>
+  </div>
+  <div class="src">Sources: WCO News 90 (85% figure at time of writing, Oct 2019); WCO newsroom Jul 2019; Times of Addu, May 2021.</div>
+</section>
+
+<!-- 9 -->
+<section class="slide" id="s9" data-t="105" data-notes="The critical evaluation, in four lenses. Red means it materially limits effectiveness today. Technically, rules do not learn and the system is batch-only: no board or no-board. Data: EU-origin PNR is blocked, the sea is invisible, IMUGA is unused. Operationally, there is no outcome feedback loop, so you cannot measure whether a rule works. Governance: no comprehensive data protection law yet, and heavy dependence on donors and one contractor. Several of these are MCS's own reported problems, not my opinion.">
+  <div class="eyebrow r">03 · Critical evaluation</div>
+  <h2 class="r" style="--d:.1s">Strong core. <span class="red">Weak edges.</span></h2>
+  <div class="legend r" style="--d:.2s"><span class="a">limits effectiveness now</span><span class="b">constrains growth</span></div>
+  <div class="matrix">
+    <div class="mcol r" style="--d:.2s"><h3>Technical</h3>
+      <div class="lim h"><h4>Rules do not learn</h4><p>Static criteria go stale; false positives grow.</p></div>
+      <div class="lim h"><h4>Batch, not real time</h4><p>No interactive API. A suspect still boards in Doha.</p></div>
+      <div class="lim"><h4>Heavy stack, small team</h4><p>Java, Drools, Neo4j, Elastic to patch and secure.</p></div>
+      <div class="lim"><h4>Name matching</h4><p>Mohamed, Mohammed, Muhammad. Transliteration noise.</p></div>
+    </div>
+    <div class="mcol r" style="--d:.35s"><h3>Data</h3>
+      <div class="lim h"><h4>EU-origin PNR blocked</h4><p>Reported by MCS. No Maldives–EU agreement.</p></div>
+      <div class="lim h"><h4>Air only</h4><p>No vessel, crew or yacht data in an ocean state.</p></div>
+      <div class="lim"><h4>IMUGA unused</h4><p>Traveller declarations are not cross-checked.</p></div>
+      <div class="lim"><h4>Carrier quality</h4><p>Late onboarding, missing fields, grace periods.</p></div>
+    </div>
+    <div class="mcol r" style="--d:.5s"><h3>Operational</h3>
+      <div class="lim h"><h4>No outcome loop</h4><p>Search results never return to tune the rules.</p></div>
+      <div class="lim"><h4>Gateway coverage</h4><p>Gan and Hanimaadhoo add new entry points.</p></div>
+      <div class="lim"><h4>Peak-bank overload</h4><p>Hits arrive when the hall is busiest.</p></div>
+      <div class="lim"><h4>Few performance KPIs</h4><p>No public hit-to-find measures.</p></div>
+    </div>
+    <div class="mcol r" style="--d:.65s"><h3>Governance</h3>
+      <div class="lim h"><h4>No data protection law</h4><p>Bill only submitted to the Majlis in May 2026.</p></div>
+      <div class="lim h"><h4>Donor dependence</h4><p>Upgrades rely on WCO and CBP goodwill.</p></div>
+      <div class="lim h"><h4>Single data contractor</h4><p>Three-year term from 2019. Renewal is a risk.</p></div>
+      <div class="lim"><h4>Bias oversight</h4><p>No formal audit of rules for discrimination.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- 10 -->
+<section class="slide" id="s10" data-t="75" data-notes="Three blind spots deserve a spotlight. One: the sea. Many of the largest drug seizures in Maldivian waters involve vessels, and GTAS cannot see a single boat. Two: Europe. MCS reported in 2019 that airlines cannot send PNR for flights from the EU. Some of the highest-volume routes are unscreened on behaviour. Three: the code. I checked this week. The public GTAS repository at CBP returns a 404. The software MCS depends on is no longer openly published. That is a sustainability question the service must answer.">
+  <div class="eyebrow r">03 · Three blind spots</div>
+  <h2 class="r" style="--d:.1s">What GTAS <span class="red">cannot see.</span></h2>
+  <div class="spots">
+    <div class="card spot r" style="--d:.2s">
+      <div class="k">Blind spot 1</div><h3>The sea</h3>
+      <p>1,190 islands and a vast EEZ. GTAS reads aircraft only. Yachts, dhonis, fishing and cargo vessels never enter the risk picture.</p>
+      <div class="vis"><canvas class="wave" id="wave"></canvas></div>
+    </div>
+    <div class="card spot r" style="--d:.35s">
+      <div class="k">Blind spot 2</div><h3>Europe</h3>
+      <p>MCS reported airlines cannot send PNR for EU-origin flights. Without a Maldives–EU arrangement, key routes are screened on identity only.</p>
+      <div class="vis"><div class="term"><span class="d">PNRGOV  LHR → MLE</span>
+<span class="e">✕ transfer refused</span>  <span class="d">GDPR · no agreement</span>
+<span class="d">PNRGOV  FRA → MLE</span>
+<span class="e">✕ transfer refused</span>  <span class="d">GDPR · no agreement</span>
+<span class="d">PAXLST  FRA → MLE</span>  ✓ received</div></div>
+    </div>
+    <div class="card spot r" style="--d:.5s">
+      <div class="k">Blind spot 3</div><h3>The future of the code</h3>
+      <p>The public GTAS repository now returns 404. Upgrades, patches and roadmap depend on others.</p>
+      <div class="vis"><div class="term"><span class="d">$</span> curl -I github.com/US-CBP/GTAS
+<span class="e">HTTP/2 404</span>
+<span class="d"># checked 27 Nov 2026</span>
+<span class="d"># last public release seen: v1.14.2</span></div></div>
+    </div>
+  </div>
+  <div class="src">Sources: WCO News 90 (EU PNR issue); direct check of github.com/US-CBP/GTAS on 27 Nov 2026.</div>
+</section>
+
+<!-- 11 -->
+<section class="slide" id="s11" data-t="75" data-notes="Now the opportunities. I only propose technology that fixes a named limitation. Rules that do not learn: explainable machine learning that suggests and scores, with a human approving. Hidden networks: graph analytics. Unused declarations: IMUGA cross-checks. Batch only: event streaming and interactive API. Blocked EU PNR: privacy-preserving computation. Analyst overload: a generative AI co-pilot. Identity fraud: biometrics and the ICAO Digital Travel Credential.">
+  <div class="eyebrow r">04 · Disruptive technologies</div>
+  <h2 class="r" style="--d:.1s">Every technology here <em>closes a named gap.</em></h2>
+  <div class="map">
+    <div class="mrow r" style="--d:.2s"><div class="l">Rules do not learn</div><div class="wire" style="--d:.45s"></div><div class="t">Explainable ML risk scoring <small>learns from MCS seizures</small></div></div>
+    <div class="mrow r" style="--d:.3s"><div class="l">Networks stay hidden</div><div class="wire" style="--d:.55s"></div><div class="t">Graph analytics <small>courier rings, agents</small></div></div>
+    <div class="mrow r" style="--d:.4s"><div class="l">IMUGA declarations unused</div><div class="wire" style="--d:.65s"></div><div class="t">Declaration × booking cross-checks <small>local data</small></div></div>
+    <div class="mrow r" style="--d:.5s"><div class="l">Batch only, no board decision</div><div class="wire" style="--d:.75s"></div><div class="t">Event streaming + interactive API <small>pre-boarding</small></div></div>
+    <div class="mrow r" style="--d:.6s"><div class="l">EU-origin PNR blocked</div><div class="wire" style="--d:.85s"></div><div class="t">Privacy-preserving computation <small>enclaves · PSI</small></div></div>
+    <div class="mrow r" style="--d:.7s"><div class="l">Analysts overloaded at peak</div><div class="wire" style="--d:.95s"></div><div class="t">Generative AI analyst co-pilot <small>human decides</small></div></div>
+    <div class="mrow r" style="--d:.8s"><div class="l">Document and identity fraud</div><div class="wire" style="--d:1.05s"></div><div class="t">Biometrics + ICAO Digital Travel Credential <small>e-gates</small></div></div>
+  </div>
+</section>
+
+<!-- 12 -->
+<section class="slide" id="s12" data-t="60" data-notes="One idea is uniquely Maldivian. Every visitor already files IMUGA within 96 hours of arrival, including customs questions. GTAS ignores it. Compare what people declare with what their booking shows. Declared a resort, but no hotel and a two-night return. Declared no currency, but paid cash and travels monthly. Mismatches are high-value signals, and the data is already in a government system. Cheapest win in this deck.">
+  <div class="eyebrow r">04 · A Maldives-only advantage</div>
+  <h2 class="r" style="--d:.1s">The country already asks every visitor. <em>Use the answers.</em></h2>
+  <div class="cases">
+    <div class="card case r" style="--d:.25s">
+      <div class="hd"><span>CASE A · ILLUSTRATIVE</span><b>MISMATCH</b></div>
+      <div class="vs">
+        <div><span>IMUGA declares</span><p>Staying at a resort, South Malé Atoll</p></div>
+        <div class="x">≠</div>
+        <div><span>PNR shows</span><p>No accommodation, 2-night return, cash ticket</p></div>
+      </div>
+      <div class="out">Outcome: <b>raised to analyst queue</b> with both sources side by side.</div>
+    </div>
+    <div class="card case r" style="--d:.4s">
+      <div class="hd"><span>CASE B · ILLUSTRATIVE</span><b>MISMATCH</b></div>
+      <div class="vs">
+        <div><span>IMUGA declares</span><p>No currency above the threshold</p></div>
+        <div class="x">≠</div>
+        <div><span>PNR + history show</span><p>Cash-paid tickets, 6 short trips in 4 months</p></div>
+      </div>
+      <div class="out">Outcome: <b>currency check on arrival</b>, FIU notified if confirmed.</div>
+    </div>
+  </div>
+  <div class="why r" style="--d:.6s">
+    <div><b>96 h</b>declaration window before arrival</div>
+    <div><b>100%</b>of foreign arrivals file one</div>
+    <div><b>0</b>new data collected from travellers</div>
+  </div>
+  <div class="src">IMUGA rule per Maldives CAA circular and UK FCDO travel advice. Cases use fictional data.</div>
+</section>
+
+<!-- 13 -->
+<section class="slide" id="s13" data-t="90" data-notes="The EU problem, solved with cryptography. Instead of moving all European PNR to Male, we move the questions to the data. MCS rules and watchlists are evaluated inside a sealed, attested enclave hosted in the EU, with private set intersection for watchlists. Only matches leave. Everyone else is never exposed. Two honest caveats. This makes an EU agreement easier, it does not replace one, and it needs our data protection bill. And the Court of Justice ruled in 2022 that EU PNR screening must use pre-set criteria, not self-learning models. So on EU data we use transparent rules only.">
+  <div class="eyebrow r">04 · Privacy-preserving PNR</div>
+  <h2 class="r" style="--d:.1s">Send the <em>questions</em> to the data. Not the data to the questions.</h2>
+  <div class="grid">
+    <canvas id="enclave" width="1720" height="1000" aria-label="Animation: EU passenger records enter a sealed enclave with MCS rules; only one matched record leaves"></canvas>
+    <div class="pts">
+      <div class="pt r" style="--d:.3s"><h4>Sealed enclave in the EU</h4><p>MCS rules run inside attested hardware. No one, including the host, sees the data.</p></div>
+      <div class="pt r" style="--d:.45s"><h4>Private set intersection</h4><p>Watchlist checks where each side learns only the overlap.</p></div>
+      <div class="pt r" style="--d:.6s"><h4>Only hits leave</h4><p>Every other passenger stays in Europe. Every disclosure is logged.</p></div>
+      <div class="pt warn r" style="--d:.75s"><h4>Limits to state plainly</h4><p>Supports, not replaces, an EU agreement and the Data Protection Bill. CJEU C-817/19 (2022): pre-set criteria only, no self-learning models on EU PNR.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- 14 -->
+<section class="slide" id="s14" data-t="90" data-notes="The proposed future system: a Maldives Traveller Risk Platform. GTAS becomes one component, not the whole answer. Six inputs: air API and PNR, IMUGA, maritime vessel and crew lists, Tradian and ASYCUDA trader data, Immigration border records, and INTERPOL. One risk engine combining transparent rules, explainable models and graph analytics. A human always decides. Outputs to an officer app at every port, to PIU case management, and to partners. The green loop is the most important line on this slide: every search outcome returns to improve the engine.">
+  <div class="eyebrow r">05 · Proposed future system</div>
+  <h2 class="r" style="--d:.1s">The Maldives <em>Traveller Risk Platform.</em></h2>
+  <div class="thesis r" style="--d:.3s">Clear the <em>99%</em> faster.<br>Target the <i>1%</i> better.</div>
+  <div class="plat r" style="--d:.3s">
+    <svg viewBox="0 0 1408 560" aria-hidden="true">
+      <g id="inputs"></g>
+      <rect class="zone" x="470" y="40" width="470" height="440" rx="20"/>
+      <text class="zonelbl" x="494" y="72">NATIONAL RISK ENGINE</text>
+      <g class="node core"><rect x="500" y="96" width="410" height="70" rx="12"/><text x="524" y="128">Streaming ingest + identity resolution</text><text class="s" x="524" y="150">one person, every source</text></g>
+      <g class="node core"><rect x="500" y="186" width="126" height="120" rx="12"/><text x="516" y="236">Rules</text><text class="s" x="516" y="260">transparent</text><text class="s" x="516" y="278">EU-safe</text></g>
+      <g class="node core"><rect x="642" y="186" width="126" height="120" rx="12"/><text x="658" y="236">ML</text><text class="s" x="658" y="260">explainable</text><text class="s" x="658" y="278">scores</text></g>
+      <g class="node core"><rect x="784" y="186" width="126" height="120" rx="12"/><text x="800" y="236">Graph</text><text class="s" x="800" y="260">networks</text><text class="s" x="800" y="278">links</text></g>
+      <g class="node out"><rect x="500" y="326" width="410" height="70" rx="12"/><text x="524" y="358">Human decision · PIU analyst</text><text class="s" x="524" y="380">reason shown for every hit</text></g>
+      <g id="outputs"></g>
+      <path class="flow" d="M940 361 H1010" />
+      <path d="M1180 470 C1180 540 705 540 705 480" fill="none" stroke="var(--ok)" stroke-width="2.5" stroke-dasharray="6 8" class="flow" style="stroke:var(--ok)"/>
+      <text x="842" y="548" fill="var(--ok)" font-family="IBM Plex Mono, monospace" font-size="13" letter-spacing="2">OUTCOME FEEDBACK LOOP</text>
+    </svg>
+  </div>
+</section>
+
+<!-- 15 -->
+<section class="slide" id="s15" data-t="75" data-notes="Delivery in three phases. First stabilise: secure the data contract, upgrade and harden GTAS, close airline gaps, and start recording outcomes. You cannot improve what you do not measure. Then integrate: IMUGA, Immigration and INTERPOL feeds, the outer gateways, an interactive API pilot and the EU privacy pilot. Then intelligence: explainable models, graph analytics, maritime, and the analyst co-pilot. Measured by five numbers on the bottom row.">
+  <div class="eyebrow r">05 · Recommendations and roadmap</div>
+  <h2 class="r" style="--d:.1s">Stabilise. Integrate. <em>Then make it intelligent.</em></h2>
+  <div class="road">
+    <div class="phase r" style="--d:.2s"><div class="bar"><i style="--d:.3s"></i></div><div class="when">0 – 12 MONTHS</div><h3>Stabilise</h3>
+      <ul><li>Secure or re-tender the airline data contract</li><li>Upgrade, patch and harden GTAS; own the codebase locally</li><li>Close API/PNR gaps to 100% of carriers</li><li>Officer outcome app: found, nothing found, false match</li><li>Publish baseline KPIs</li></ul></div>
+    <div class="phase r" style="--d:.35s"><div class="bar"><i style="--d:.6s"></i></div><div class="when">12 – 24 MONTHS</div><h3>Integrate</h3>
+      <ul><li>IMUGA × PNR cross-checks</li><li>Immigration border records and INTERPOL SLTD feeds</li><li>Gan and Hanimaadhoo on the same risk picture</li><li>Interactive API pilot with two carriers</li><li>EU privacy-preserving PNR pilot</li></ul></div>
+    <div class="phase r" style="--d:.5s"><div class="bar"><i style="--d:.9s"></i></div><div class="when">24 – 48 MONTHS</div><h3>Intelligence</h3>
+      <ul><li>Explainable ML risk scoring on non-EU data</li><li>Graph analytics for networks</li><li>Maritime module: vessel, crew, yacht lists</li><li>Generative AI analyst co-pilot</li><li>Biometric e-gates for low-risk travellers</li></ul></div>
+  </div>
+  <div class="kpis r" style="--d:.7s">
+    <div class="lbl">Measured by</div>
+    <div><b>KPI 1</b>Hit-to-find rate</div>
+    <div><b>KPI 2</b>False-positive rate</div>
+    <div><b>KPI 3</b>% of arrivals pre-screened</div>
+    <div><b>KPI 4</b>Landing-to-exit time, low-risk</div>
+    <div><b>KPI 5</b>Carrier data completeness</div>
+  </div>
+</section>
+
+<!-- 16 -->
+<section class="slide" id="s16" data-t="45" data-notes="To close, three messages. GTAS delivered: MCS went from manual selection to pre-arrival targeting in eighteen months. It has stalled at the edges: Europe, the sea, learning and sustainability. And the answer is a platform, not a patch: integrated, explainable, privacy-preserving, and owned by the Maldives. Underpinned by safeguards: a human decides, rules are audited for bias, and the data protection bill is passed. Thank you. I welcome your questions.">
+  <div class="eyebrow r">Conclusion</div>
+  <h2 class="r" style="--d:.1s">Three things to take away.</h2>
+  <div class="msgs">
+    <div class="msg r" style="--d:.25s"><div class="n">1</div><div><h3>GTAS delivered.</h3><p>Manual selection to pre-arrival targeting in eighteen months, with an interception in week ten.</p></div></div>
+    <div class="msg r" style="--d:.4s"><div class="n">2</div><div><h3>It has stalled at the edges.</h3><p>Europe, the sea, learning from outcomes, and long-term sustainability.</p></div></div>
+    <div class="msg r" style="--d:.55s"><div class="n">3</div><div><h3>The next step is a platform, not a patch.</h3><p>Integrated, explainable, privacy-preserving, and owned by the Maldives. A human always decides.</p></div></div>
+  </div>
+  <div class="thanks r" style="--d:.8s"><b>Thank you.</b><span>QUESTIONS WELCOME</span></div>
+</section>
+
+</div></div>
+
+<div class="notes" id="notes" hidden><b id="notesh">Speaker notes</b><div id="notesb"></div></div>
+<div class="hud"><div class="bar" id="bar"></div>
+  <span id="count">01 / 16</span><span id="timer">00:00</span><span class="sp"></span>
+  <button id="prev" aria-label="Previous slide">←</button>
+  <button id="next" aria-label="Next slide">→</button>
+  <button id="nbtn" aria-label="Toggle speaker notes">Notes (N)</button>
+  <button id="fbtn" aria-label="Toggle fullscreen">Full (F)</button>
+</div>
+
+<script>
+(()=>{
+const slides=[...document.querySelectorAll('.slide')];
+const stage=document.getElementById('stage');
+const reduce=matchMedia('(prefers-reduced-motion: reduce)').matches;
+let cur=0, t0=null;
+
+function fit(){const s=Math.min(innerWidth/1600,(innerHeight-44)/900);stage.style.transform=`scale(${s})`;stage.style.marginBottom='44px'}
+addEventListener('resize',fit);fit();
+
+const hooks={};
+function go(i,push=true){
+  i=Math.max(0,Math.min(slides.length-1,i));
+  if(t0===null&&i!==0)t0=Date.now();
+  slides.forEach((s,k)=>{s.classList.toggle('active',k===i);s.classList.toggle('past',k<i)});
+  const s=slides[i];
+  // restart CSS animations on re-entry
+  s.querySelectorAll('.r,.prog,.wire,.pnr div,.bar i').forEach(el=>{el.style.animation='none';el.offsetWidth;el.style.animation=''});
+  cur=i;
+  document.getElementById('count').textContent=String(i+1).padStart(2,'0')+' / '+slides.length;
+  document.getElementById('bar').style.width=((i+1)/slides.length*100)+'%';
+  const t=+s.dataset.t; document.getElementById('notesh').textContent=`Speaker notes · slide ${i+1} · target ${Math.floor(t/60)}:${String(t%60).padStart(2,'0')}`;
+  document.getElementById('notesb').textContent=s.dataset.notes||'';
+  if(push) history.replaceState(null,'','#'+s.id);
+  (hooks[s.id]||(()=>{}))();
+  s.querySelectorAll('[data-count]').forEach(countUp);
+}
+const fromHash=()=>{const k=slides.findIndex(s=>'#'+s.id===location.hash);return k<0?0:k};
+addEventListener('hashchange',()=>{const k=fromHash();if(k!==cur)go(k,false)});
+
+addEventListener('keydown',e=>{
+  if(['ArrowRight','PageDown',' ','Enter'].includes(e.key)){e.preventDefault();go(cur+1)}
+  else if(['ArrowLeft','PageUp','Backspace'].includes(e.key)){e.preventDefault();go(cur-1)}
+  else if(e.key==='Home')go(0); else if(e.key==='End')go(slides.length-1);
+  else if(e.key==='n'||e.key==='N')toggleNotes();
+  else if(e.key==='f'||e.key==='F')toggleFs();
+  else if(e.key==='r'||e.key==='R'){t0=Date.now()}
+});
+document.getElementById('next').onclick=()=>go(cur+1);
+document.getElementById('prev').onclick=()=>go(cur-1);
+function toggleNotes(){const n=document.getElementById('notes');n.hidden=!n.hidden}
+document.getElementById('nbtn').onclick=toggleNotes;
+function toggleFs(){try{document.fullscreenElement?document.exitFullscreen():document.documentElement.requestFullscreen()}catch(e){}}
+document.getElementById('fbtn').onclick=toggleFs;
+let tx=null;addEventListener('touchstart',e=>tx=e.touches[0].clientX,{passive:true});
+addEventListener('touchend',e=>{if(tx===null)return;const d=e.changedTouches[0].clientX-tx;if(Math.abs(d)>50)go(cur+(d<0?1:-1));tx=null});
+setInterval(()=>{const el=document.getElementById('timer');if(t0===null){el.textContent='00:00 · press → to start';return}
+  const s=Math.floor((Date.now()-t0)/1000);el.textContent=String(Math.floor(s/60)).padStart(2,'0')+':'+String(s%60).padStart(2,'0')+' / 20:00';el.classList.toggle('warn',s>18*60)},500);
+
+function countUp(el){const end=+el.dataset.count;if(reduce){el.textContent=end.toLocaleString('en-US');return}
+  const st=performance.now(),dur=1400;const f=n=>{const p=Math.min(1,(n-st)/dur),e=1-Math.pow(1-p,4);el.textContent=Math.round(end*e).toLocaleString('en-US');if(p<1)requestAnimationFrame(f)};requestAnimationFrame(f)}
+
+/* ---------- ambient background: drifting lagoon particles ---------- */
+const bg=document.getElementById('bg'),bx=bg.getContext('2d');let P=[];
+function bgSize(){bg.width=innerWidth*devicePixelRatio;bg.height=innerHeight*devicePixelRatio;P=Array.from({length:90},()=>({x:Math.random()*bg.width,y:Math.random()*bg.height,v:.15+Math.random()*.35,r:Math.random()*1.6+.3}))}
+bgSize();addEventListener('resize',bgSize);
+function bgDraw(){const w=bg.width,h=bg.height;const g=bx.createRadialGradient(w*.75,h*.2,0,w*.75,h*.2,w*.9);g.addColorStop(0,'#0a3140');g.addColorStop(.5,'#061a25');g.addColorStop(1,'#04111a');bx.fillStyle=g;bx.fillRect(0,0,w,h);
+  bx.fillStyle='rgba(63,224,207,.35)';P.forEach(p=>{p.y-=p.v;if(p.y<0){p.y=h;p.x=Math.random()*w}bx.globalAlpha=.25+p.r/3;bx.beginPath();bx.arc(p.x,p.y,p.r*devicePixelRatio,0,7);bx.fill()});bx.globalAlpha=1;if(!reduce)requestAnimationFrame(bgDraw)}
+bgDraw();
+
+/* ---------- S1: flight arcs converging on MLE ---------- */
+const ac=document.getElementById('arcs'),ax=ac.getContext('2d');ac.width=1800;ac.height=1600;
+const proj=(lon,lat)=>[(lon-(-10))/(130-(-10))*1700+50,(60-lat)/(60-(-30))*1400+100];
+const MLE=proj(73.5,4.2);
+const origins=[['DXB',55.4,25.3],['DOH',51.6,25.3],['CMB',79.9,7.2],['DEL',77.1,28.6],['BOM',72.9,19.1],['PEK',116.6,40.1],['PVG',121.8,31.1],['SIN',104,1.35],['KUL',101.7,2.7],['BKK',100.7,13.7],['IST',28.8,41.3],['FRA',8.6,50],['LHR',-0.45,51.5],['MXP',8.7,45.6],['DME',37.9,55.4],['AUH',54.6,24.4],['BLR',77.7,13.2],['HKG',113.9,22.3]];
+const dots=[];for(let lat=-25;lat<=58;lat+=2.2)for(let lon=-8;lon<=128;lon+=2.2){if(Math.random()<.55)dots.push(proj(lon,lat))}
+const flights=origins.map((o,i)=>({o,p:proj(o[1],o[2]),t:Math.random(),sp:.0018+Math.random()*.002,red:i===2||i===12}));
+function arcPt(a,b,t){const mx=(a[0]+b[0])/2,my=(a[1]+b[1])/2-Math.hypot(b[0]-a[0],b[1]-a[1])*.28;const u=1-t;return[u*u*a[0]+2*u*t*mx+t*t*b[0],u*u*a[1]+2*u*t*my+t*t*b[1]]}
+function arcs(){ax.clearRect(0,0,ac.width,ac.height);
+  ax.fillStyle='rgba(63,224,207,.10)';dots.forEach(d=>{ax.fillRect(d[0],d[1],3,3)});
+  flights.forEach(f=>{ax.beginPath();for(let k=0;k<=40;k++){const q=arcPt(f.p,MLE,k/40);k?ax.lineTo(q[0],q[1]):ax.moveTo(q[0],q[1])}
+    ax.strokeStyle=f.red?'rgba(255,79,97,.35)':'rgba(63,224,207,.22)';ax.lineWidth=2;ax.stroke();
+    ax.fillStyle='rgba(232,243,242,.6)';ax.font='22px IBM Plex Mono, monospace';ax.fillText(f.o[0],f.p[0]+8,f.p[1]-8);
+    ax.beginPath();ax.arc(f.p[0],f.p[1],4,0,7);ax.fill();
+    if(!reduce)f.t+=f.sp;if(f.t>1)f.t=0;const q=arcPt(f.p,MLE,f.t);
+    ax.beginPath();ax.arc(q[0],q[1],f.red?8:6,0,7);ax.fillStyle=f.red?'#ff4f61':'#3fe0cf';ax.shadowColor=ax.fillStyle;ax.shadowBlur=24;ax.fill();ax.shadowBlur=0});
+  const pulse=(performance.now()/1000)%2/2;ax.beginPath();ax.arc(MLE[0],MLE[1],12+pulse*70,0,7);ax.strokeStyle=`rgba(243,199,111,${1-pulse})`;ax.lineWidth=3;ax.stroke();
+  ax.beginPath();ax.arc(MLE[0],MLE[1],11,0,7);ax.fillStyle='#f3c76f';ax.fill();
+  ax.fillStyle='#f3c76f';ax.font='600 34px IBM Plex Mono, monospace';ax.fillText('MLE',MLE[0]+24,MLE[1]+12);
+  if(slides[0].classList.contains('active')&&!reduce)requestAnimationFrame(arcs)}
+hooks.s1=()=>requestAnimationFrame(arcs);
+
+/* ---------- S2: 350 passengers -> 4 flagged ---------- */
+const pax=document.getElementById('pax');for(let i=0;i<350;i++)pax.appendChild(document.createElement('i'));
+const P2=[...pax.children],HITS=[47,163,218,301];let paxTimers=[];
+hooks.s2=()=>{paxTimers.forEach(clearTimeout);paxTimers=[];P2.forEach(d=>d.className='');const st=document.getElementById('paxstat');st.textContent='350 passengers';
+  P2.forEach((d,i)=>{const col=i%25;paxTimers.push(setTimeout(()=>{d.className='scan';paxTimers.push(setTimeout(()=>d.className=HITS.includes(i)?'hit':'clear',260))},reduce?0:700+col*70+Math.floor(i/25)*18))});
+  paxTimers.push(setTimeout(()=>st.innerHTML='<span style="color:var(--risk)">4 flagged</span> · 346 cleared',reduce?0:3200))};
+
+/* ---------- S5: EDIFACT typing ---------- */
+const EDI=`UNA:+.? '
+UNB+UNOA:4+QRAPI+MVCUSTOMS+261127:0410'
+UNH+1+PAXLST:D:05B:UN:IATA'
+BGM+745'
+TDT+20+QR674'
+LOC+125+DOH'  DTM+189:2611270230'
+LOC+87+MLE'   DTM+232:2611270840'
+NAD+FL+++SILVA:RAFAEL'
+ATT+2++M'     DTM+329:960314'
+NAT+2+BRA'
+DOC+P:110:111+FX4471902'
+DTM+36:310905'  LOC+91+BRA'
+UNT+14+1'`;
+let ediT=null;
+hooks.s5=()=>{clearTimeout(ediT);const el=document.getElementById('edi');let n=reduce?EDI.length:0;
+  const tick=()=>{const txt=EDI.slice(0,n).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/^([A-Z]{3})/gm,'<span class="seg">$1</span>');el.innerHTML=txt+'<span class="caret"></span>';if(n<EDI.length){n+=3;ediT=setTimeout(tick,22)}};tick()};
+
+/* ---------- S7: rule evaluation ---------- */
+let ruleT=[];
+hooks.s7=()=>{ruleT.forEach(clearTimeout);ruleT=[];const cs=[...document.querySelectorAll('#s7 .cond')],m=document.getElementById('meter'),v=document.getElementById('verdict');
+  cs.forEach(c=>c.classList.remove('on'));m.style.width='0';v.classList.remove('on');
+  cs.forEach((c,i)=>ruleT.push(setTimeout(()=>{c.classList.add('on');m.style.width=((i+1)/cs.length*100)+'%'},reduce?0:900+i*520)));
+  ruleT.push(setTimeout(()=>v.classList.add('on'),reduce?0:900+cs.length*520+200))};
+
+/* ---------- S10: sea wave with unseen vessels ---------- */
+const wv=document.getElementById('wave'),wx=wv.getContext('2d');wv.width=900;wv.height=340;
+function wave(){const t=performance.now()/1000;wx.clearRect(0,0,900,340);
+  for(let L=0;L<4;L++){wx.beginPath();for(let x=0;x<=900;x+=10){const y=170+L*38+Math.sin(x/70+t*(1+L*.3)+L)*12;x?wx.lineTo(x,y):wx.moveTo(x,y)}wx.strokeStyle=`rgba(63,224,207,${.35-L*.07})`;wx.lineWidth=2.5;wx.stroke()}
+  [[.15,.0],[.55,.5],[.85,.25]].forEach(([fx,ph],i)=>{const x=((fx*900+t*30*(i%2?1:-1))%980+980)%980-40,y=150+Math.sin(x/70+t+ph)*12;
+    wx.fillStyle='rgba(255,79,97,.9)';wx.beginPath();wx.moveTo(x-26,y);wx.lineTo(x+26,y);wx.lineTo(x+16,y+14);wx.lineTo(x-16,y+14);wx.fill();
+    wx.font='22px IBM Plex Mono, monospace';wx.fillStyle='rgba(255,179,187,.9)';wx.fillText('?',x-6,y-12)});
+  wx.font='20px IBM Plex Mono, monospace';wx.fillStyle='rgba(138,165,171,.9)';wx.fillText('VESSELS · NOT IN GTAS',20,36);
+  if(slides[9].classList.contains('active')&&!reduce)requestAnimationFrame(wave)}
+hooks.s10=()=>requestAnimationFrame(wave);
+
+/* ---------- S13: enclave animation ---------- */
+const ec=document.getElementById('enclave'),ex=ec.getContext('2d');const EW=1720,EH=1000;let parts=[];
+function rr(x,y,w,h,r){ex.beginPath();ex.roundRect?ex.roundRect(x,y,w,h,r):ex.rect(x,y,w,h)}
+function encl(){const t=performance.now()/1000;ex.clearRect(0,0,EW,EH);
+  // zones
+  ex.setLineDash([8,10]);ex.strokeStyle='rgba(63,224,207,.35)';ex.lineWidth=2;rr(20,60,1080,880,30);ex.stroke();ex.setLineDash([]);
+  ex.font='24px IBM Plex Mono, monospace';ex.fillStyle='#3fe0cf';ex.fillText('EUROPEAN UNION',50,105);
+  ex.fillStyle='#f3c76f';ex.fillText('MALDIVES CUSTOMS',1260,105);
+  // airline box
+  ex.fillStyle='rgba(11,37,52,.95)';ex.strokeStyle='rgba(120,220,220,.25)';rr(60,380,250,240,20);ex.fill();ex.stroke();
+  ex.fillStyle='#e8f3f2';ex.font='600 30px IBM Plex Sans, sans-serif';ex.fillText('EU airline',90,470);ex.font='22px IBM Plex Mono, monospace';ex.fillStyle='#8aa5ab';ex.fillText('all passenger',90,510);ex.fillText('records (PNR)',90,540);
+  // enclave
+  const gl=.5+.5*Math.sin(t*2);ex.save();ex.shadowColor='#3fe0cf';ex.shadowBlur=30+gl*30;ex.strokeStyle='#3fe0cf';ex.lineWidth=4;ex.fillStyle='rgba(8,40,52,.96)';rr(520,300,420,400,30);ex.fill();ex.stroke();ex.restore();
+  ex.fillStyle='#e8f3f2';ex.font='700 34px Bricolage Grotesque, sans-serif';ex.fillText('Sealed enclave',575,400);
+  ex.font='22px IBM Plex Mono, monospace';ex.fillStyle='#8aa5ab';ex.fillText('attested · encrypted',575,440);ex.fillText('in memory',575,470);
+  ex.fillStyle='#3fe0cf';ex.font='60px IBM Plex Mono, monospace';ex.fillText('🔒',690,600);
+  // MCS box
+  ex.fillStyle='rgba(11,37,52,.95)';ex.strokeStyle='rgba(243,199,111,.45)';rr(1250,150,420,200,20);ex.fill();ex.stroke();
+  ex.fillStyle='#e8f3f2';ex.font='600 30px IBM Plex Sans, sans-serif';ex.fillText('MCS rules +',1280,230);ex.fillText('watchlist',1280,268);ex.font='22px IBM Plex Mono, monospace';ex.fillStyle='#8aa5ab';ex.fillText('sent encrypted',1280,310);
+  rr(1250,620,420,200,20);ex.fillStyle='rgba(11,37,52,.95)';ex.fill();ex.strokeStyle='rgba(255,79,97,.55)';ex.stroke();
+  ex.fillStyle='#e8f3f2';ex.font='600 30px IBM Plex Sans, sans-serif';ex.fillText('GTAS at MCS',1280,700);ex.font='22px IBM Plex Mono, monospace';ex.fillStyle='#ffb3bb';ex.fillText('receives hits only',1280,745);
+  // rules path
+  ex.setLineDash([10,12]);ex.lineDashOffset=-t*40;ex.strokeStyle='rgba(243,199,111,.7)';ex.lineWidth=3;ex.beginPath();ex.moveTo(1250,250);ex.bezierCurveTo(1100,250,1050,400,940,420);ex.stroke();
+  ex.strokeStyle='rgba(255,79,97,.7)';ex.beginPath();ex.moveTo(940,580);ex.bezierCurveTo(1060,600,1100,720,1250,720);ex.stroke();ex.setLineDash([]);
+  // particles
+  if(Math.random()<.35)parts.push({x:310,y:430+Math.random()*140,v:3+Math.random()*2,hit:Math.random()<.04,ph:0});
+  parts.forEach(p=>{if(p.ph===0){p.x+=p.v;if(p.x>560)p.ph=1}else if(p.ph===1){p.x+=p.v*.7;if(p.x>880){p.ph=p.hit?2:3}}
+    else if(p.ph===2){p.t=(p.t||0)+.012;const u=p.t,a=[940,580],b=[1250,720];p.x=a[0]+(b[0]-a[0])*u;p.y=a[1]+(b[1]-a[1])*u+Math.sin(u*3.14)*-30;if(u>=1)p.dead=1}
+    else{p.a=(p.a||1)-.05;if(p.a<=0)p.dead=1}
+    ex.globalAlpha=p.a??1;ex.beginPath();ex.arc(p.x,p.y,p.hit&&p.ph>=1?10:6,0,7);ex.fillStyle=p.hit&&p.ph>=1?'#ff4f61':'#3fe0cf';if(p.hit&&p.ph>=1){ex.shadowColor='#ff4f61';ex.shadowBlur=20}ex.fill();ex.shadowBlur=0;ex.globalAlpha=1});
+  parts=parts.filter(p=>!p.dead);
+  ex.font='22px IBM Plex Mono, monospace';ex.fillStyle='#8aa5ab';ex.fillText('everyone else never leaves the EU',520,760);
+  if(slides[12].classList.contains('active')&&!reduce)requestAnimationFrame(encl)}
+hooks.s13=()=>{parts=[];if(reduce){for(let i=0;i<40;i++)parts.push({x:330+i*14,y:450+(i*37)%120,v:0,ph:0})}requestAnimationFrame(encl)};
+
+/* ---------- S14: platform inputs/outputs ---------- */
+const NS='http://www.w3.org/2000/svg';
+function node(g,x,y,w,h,t,s,cls){const n=document.createElementNS(NS,'g');n.setAttribute('class','node '+(cls||''));
+  n.innerHTML=`<rect x="${x}" y="${y}" width="${w}" height="${h}" rx="12"/><text x="${x+20}" y="${y+h/2-2}">${t}</text><text class="s" x="${x+20}" y="${y+h/2+20}">${s}</text>`;g.appendChild(n)}
+const ins=[['Air API + PNR','GTAS today',''],['IMUGA declarations','new · cheap win','core'],['Maritime vessel + crew','new · closes sea gap','core'],['Tradian / ASYCUDA','trader links','core'],['Immigration records','entry · exit','core'],['INTERPOL SLTD','stolen documents','core']];
+const gi=document.getElementById('inputs');ins.forEach((d,i)=>{const y=20+i*82;node(gi,0,y,380,66,d[0],d[1],d[2]);const p=document.createElementNS(NS,'path');p.setAttribute('class','flow');p.setAttribute('d',`M380 ${y+33} C430 ${y+33} 430 131 500 131`);gi.prepend(p)});
+const outs=[['Officer app','every port · outcome capture'],['PIU case management','referrals · investigations'],['Partner sharing','INTERPOL · WCO · bilateral']];
+const go2=document.getElementById('outputs');outs.forEach((d,i)=>{const y=190+i*96;node(go2,1010,y,398,78,d[0],d[1],'out');if(i){const p=document.createElementNS(NS,'path');p.setAttribute('class','flow amber');p.setAttribute('d',`M1010 229 C990 229 990 ${y+39} 1010 ${y+39}`);go2.prepend(p)}});
+
+go(fromHash(),false);
+})();
+</script>
+</body>
+</html>
