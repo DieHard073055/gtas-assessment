@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>GTAS Six Years In</title>
+<title>GTAS Assessment</title>
 <meta name="description" content="Independent technical and operational assessment of GTAS at Maldives Customs Service.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -55,12 +55,12 @@ h2 .red{color:var(--risk)}
 .notes b{color:var(--sea);font-family:var(--f-mono);font-size:12px;letter-spacing:.15em;text-transform:uppercase;display:block;margin-bottom:6px}
 
 /* ===== S1 hero ===== */
-#s1 .wrap{position:relative;z-index:2;max-width:860px;padding-top:70px}
-#s1 h1{font-size:132px;line-height:.9;font-weight:800;margin-top:26px;letter-spacing:-.045em}
+#s1 .wrap{position:relative;z-index:2;max-width:860px;padding-top:30px}
+#s1 h1{font-size:120px;line-height:.9;font-weight:800;margin-top:26px;letter-spacing:-.045em}
 #s1 h1 span{display:block;background:linear-gradient(92deg,var(--sea),#9ff3e8 45%,var(--sand));-webkit-background-clip:text;background-clip:text;color:transparent}
 #s1 .lede{font-size:24px;max-width:720px}
 #arcs{position:absolute;right:-40px;top:40px;width:900px;height:800px;z-index:1}
-.agenda{display:flex;gap:10px;margin-top:54px;flex-wrap:wrap}
+.agenda{display:grid;gap:8px;margin-top:40px;justify-items:start}
 .agenda span{font-family:var(--f-mono);font-size:13.5px;padding:9px 14px;border:1px solid var(--line);border-radius:999px;color:var(--muted)}
 .agenda span b{color:var(--sea);font-weight:500;margin-right:8px}
 .board{position:absolute;left:96px;bottom:70px;display:flex;gap:28px;font-family:var(--f-mono);font-size:13px;color:var(--muted);z-index:2}
@@ -151,7 +151,7 @@ h2 .red{color:var(--risk)}
 .chips span{font-family:var(--f-mono);font-size:13px;padding:7px 12px;border-radius:7px;background:rgba(63,224,207,.07);border:1px solid var(--line);color:#bfeee8}
 
 /* ===== S7 rule engine ===== */
-#s7 .grid{display:grid;grid-template-columns:690px 1fr;gap:56px;margin-top:40px}
+#s6 .grid{display:grid;grid-template-columns:690px 1fr;gap:56px;margin-top:40px}
 .rule{padding:28px 30px}
 .rule .rh{display:flex;justify-content:space-between;font-family:var(--f-mono);font-size:13px;color:var(--muted)}
 .rule .rh b{color:var(--sand);font-weight:500}
@@ -292,27 +292,21 @@ h2 .red{color:var(--risk)}
 <div class="viewport"><div class="stage" id="stage">
 
 <!-- 1 -->
-<section class="slide" id="s1" data-t="30" data-notes="Good morning. I was asked to independently assess GTAS. My headline: GTAS is not a proposal for Maldives Customs; it has been live since June 2019. So this is a six-year review. What it delivered, where it has stalled, and what MCS should build next. Five parts, about twenty minutes.">
+<section class="slide" id="s1" data-t="30" data-notes="Good morning. I was asked to carry out an independent technical and operational assessment of GTAS, the Global Travel Assessment System, as a passenger risk assessment and border management platform. I will cover the five areas in the brief, in order: introduction and technical background, existing functionality and operational capabilities, a critical evaluation of its limitations, opportunities from disruptive technologies, and a proposed future system with recommendations. About twenty minutes.">
   <canvas id="arcs" aria-hidden="true"></canvas>
   <div class="wrap">
-    <div class="eyebrow r">Independent assessment · Maldives Customs Service</div>
-    <h1 class="r" style="--d:.15s">GTAS,<span>six years in.</span></h1>
-    <p class="lede r" style="--d:.35s">A technical and operational review of the Global Travel Assessment System at Velana, and a blueprint for what Maldives Customs should build next.</p>
+    <div class="eyebrow r">Independent technical and operational assessment</div>
+    <h1 class="r" style="--d:.15s">GTAS,<span>assessed.</span></h1>
+    <p class="lede r" style="--d:.35s">The Global Travel Assessment System as a passenger risk assessment and border management platform: what it does, where it falls short, and how to make it more effective.</p>
     <div class="agenda r" style="--d:.55s">
-      <span><b>01</b>Background</span><span><b>02</b>Capabilities</span><span><b>03</b>Evaluation</span><span><b>04</b>Disruptive tech</span><span><b>05</b>Future system</span>
+      <span><b>01</b>Introduction and technical background</span><span><b>02</b>Existing functionalities and operational capabilities</span><span><b>03</b>Critical evaluation: drawbacks and limitations</span><span><b>04</b>Opportunities through disruptive technologies</span><span><b>05</b>Proposed future system and recommendations</span>
     </div>
-  </div>
-  <div class="board r" style="--d:.8s">
-    <div>GATEWAY<b>MLE · VELANA</b></div>
-    <div>SYSTEM<b>GTAS · WCO / CBP</b></div>
-    <div>LIVE SINCE<b>23 JUN 2019</b></div>
-    <div>STATUS<b style="color:var(--sand)">UNDER REVIEW</b></div>
   </div>
 </section>
 
 <!-- 2 -->
 <section class="slide" id="s2" data-t="75" data-notes="Start with the problem. 2.25 million tourist arrivals last year, up almost 10 percent. A single wide-body from Dubai lands with 350 people. Officers can search a handful. Without data, that choice is instinct. GTAS exists to make that choice from evidence, hours before landing. Find the few, clear the rest. That is also a tourism argument: every legitimate guest you do not stop is a better arrival.">
-  <div class="eyebrow r">The problem</div>
+  <div class="eyebrow r">01 · Introduction · the problem GTAS exists to solve</div>
   <h2 class="r" style="--d:.1s">One flight. 350 passengers. <em>Which four do you stop?</em></h2>
   <div class="grid">
     <div class="r" style="--d:.25s">
@@ -330,57 +324,34 @@ h2 .red{color:var(--risk)}
 </section>
 
 <!-- 3 -->
-<section class="slide" id="s3" data-t="75" data-notes="Why GTAS exists. Security Council Resolutions 2178 and 2396 oblige states to use API and build PNR capacity, driven by foreign terrorist fighter travel, which the Maldives knows well. Small administrations could not buy commercial systems, so CBP donated GTAS to the WCO, who give it free to members. Japan funded the Maldives rollout through the WCO Asia/Pacific Security Project. And the starting point was honest: MCS had no API, no PNR, manual selection.">
-  <div class="eyebrow r">01 · Introduction and background</div>
-  <h2 class="r" style="--d:.1s">A global mandate met a <em>small-administration</em> reality.</h2>
+<section class="slide" id="s3" data-t="75" data-notes="What GTAS is. It is a passenger risk assessment system: it takes airline passenger data before arrival, screens every traveller against risk rules and watchlists, and gives analysts a ranked list of who to look at. Why it exists: Security Council Resolutions 2178 and 2396 require states to use API and build PNR capability. Who built it: US CBP, which donated it to the WCO, who supply it free to member administrations that cannot buy commercial systems. Maldives Customs is one of those administrations: before GTAS there was no API, no PNR and manual selection; it went live in June 2019 with Japanese funding through the WCO.">
+  <div class="eyebrow r">01 · Introduction and technical background</div>
+  <h2 class="r" style="--d:.1s">What GTAS is, <em>and why it exists.</em></h2>
   <div class="cols3">
     <div class="card pillar r" style="--d:.25s">
-      <div class="k">The mandate</div>
+      <div class="k">What it is</div>
+      <h3>A pre-arrival passenger risk assessment system</h3>
+      <p>Receives airline <b>API</b> and <b>PNR</b> data, screens every traveller against <b>risk rules and watchlists</b>, and gives analysts a ranked list of passengers to examine before the flight lands.</p>
+      <div class="glyph">RA</div>
+    </div>
+    <div class="card pillar r" style="--d:.4s">
+      <div class="k">Why it exists</div>
       <h3>UN Security Council Resolutions 2178 &amp; 2396</h3>
       <p>States must use <b>Advance Passenger Information</b> and build the capability to collect and use <b>Passenger Name Record</b> data to detect terrorist and criminal travel.</p>
       <div class="glyph">UN</div>
     </div>
-    <div class="card pillar r" style="--d:.4s">
-      <div class="k">The partnership</div>
-      <h3>WCO · Japan · US CBP</h3>
-      <p><b>US CBP</b> built GTAS and donated it to the <b>WCO</b>, which supplies it free to members. <b>Japan</b> funded the Maldives rollout through the WCO Asia/Pacific Security Project.</p>
-      <div class="glyph">$0</div>
-    </div>
     <div class="card pillar r" style="--d:.55s">
-      <div class="k">The starting point</div>
-      <h3>MCS before 2019</h3>
-      <p>No API. No PNR. Passengers <b>selected on a manual risk basis</b> at the arrival hall.</p>
-      <blockquote>“Maldives lack the capacity to build our own system.”</blockquote>
-      <div class="glyph">0</div>
+      <div class="k">Who provides it</div>
+      <h3>Built by US CBP · supplied by the WCO</h3>
+      <p>Donated to the <b>WCO</b> and supplied <b>free</b> to member administrations. Maldives Customs moved from manual selection to GTAS in <b>June 2019</b>, funded by Japan through the WCO.</p>
+      <div class="glyph">$0</div>
     </div>
   </div>
   <div class="src">Sources: WCO News 90 (Oct 2019); MCS presentation, M. Afzal, Chief Customs Officer; WCO newsroom (Jul 2019).</div>
 </section>
 
 <!-- 4 -->
-<section class="slide" id="s4" data-t="75" data-notes="Delivery was fast. Eighteen months from a workshop in Bangkok to live data. The critical step was legal: the old framework never mentioned PNR, so a new regulation was gazetted in August 2018. Go-live 23 June 2019. And within ten weeks, two South American drug couriers flagged by GTAS were intercepted. In 2021 an MoU opened access to Immigration and Police. Hold on to that: since 2021 there is little public evidence of further development.">
-  <div class="eyebrow r">01 · How MCS got here</div>
-  <h2 class="r" style="--d:.1s">Eighteen months from workshop to <em>first interception.</em></h2>
-  <div class="tl">
-    <svg viewBox="0 0 1408 420" preserveAspectRatio="none" aria-hidden="true">
-      <defs><linearGradient id="tlg" x1="0" x2="1"><stop offset="0" stop-color="#3fe0cf"/><stop offset=".8" stop-color="#3fe0cf"/><stop offset="1" stop-color="#f3c76f"/></linearGradient></defs>
-      <line class="track" x1="0" y1="210" x2="1408" y2="210"/>
-      <path class="prog" d="M0 210 H1408"/>
-    </svg>
-    <div class="ev up r" style="left:4%;--d:.3s"><div class="dot"></div><div class="when">OCT 2017</div><div class="what">WCO security workshop, Bangkok</div></div>
-    <div class="ev down r" style="left:17%;--d:.6s"><div class="dot"></div><div class="when">MAR 2018</div><div class="what">WCO technical mission assesses MCS</div></div>
-    <div class="ev up r" style="left:30%;--d:.9s"><div class="dot"></div><div class="when">AUG 2018</div><div class="what">API/PNR regulation gazetted</div></div>
-    <div class="ev down r" style="left:43%;--d:1.2s"><div class="dot"></div><div class="when">20 JUN 2019</div><div class="what">First test message from Etihad</div></div>
-    <div class="ev up key r" style="left:56%;--d:1.5s"><div class="dot"></div><div class="when">23 JUN 2019</div><div class="what"><b>Go-live.</b> First live API from Maldivian</div></div>
-    <div class="ev down r" style="left:68%;--d:1.8s"><div class="dot"></div><div class="when">AUG 2019</div><div class="what">First PNR received (AirAsia)</div></div>
-    <div class="ev up win r" style="left:81%;--d:2.1s"><div class="dot"></div><div class="when">1 SEP 2019</div><div class="what">Two GTAS-flagged drug couriers intercepted</div></div>
-    <div class="ev down r" style="left:95%;--d:2.4s"><div class="dot"></div><div class="when">MAY 2021</div><div class="what">MoU: Customs, Immigration, Police share access</div></div>
-  </div>
-  <div class="src">Sources: WCO News 90; MCS presentation (M. Afzal); Times of Addu, 5 May 2021.</div>
-</section>
-
-<!-- 5 -->
-<section class="slide" id="s5" data-t="90" data-notes="Two data streams feed GTAS. API is the passport page, captured at check-in, in the UN/EDIFACT PAXLST format. Highly reliable, but it only tells you who. PNR is the booking: when it was made, how it was paid, contact details, route, bags, who you travel with. Self-declared, but rich in behaviour. Pay attention to the red fields: cash payment, booked 30 hours before departure, two-night stay. That is what a targeting officer looks for.">
+<section class="slide" id="s4" data-t="90" data-notes="Two data streams feed GTAS. API is the passport page, captured at check-in, in the UN/EDIFACT PAXLST format. Highly reliable, but it only tells you who. PNR is the booking: when it was made, how it was paid, contact details, route, bags, who you travel with. Self-declared, but rich in behaviour. Pay attention to the red fields: cash payment, booked 30 hours before departure, two-night stay. That is what a targeting officer looks for.">
   <div class="eyebrow r">01 · Technical background · the inputs</div>
   <h2 class="r" style="--d:.1s">API tells you <em>who.</em> PNR tells you <em>how they travel.</em></h2>
   <div class="two">
@@ -407,8 +378,8 @@ h2 .red{color:var(--risk)}
   <div class="src">Illustrative records with fictional data. Standards: WCO/IATA/ICAO API and PNR Guidelines; ICAO Annex 9.</div>
 </section>
 
-<!-- 6 -->
-<section class="slide" id="s6" data-t="90" data-notes="Architecture. Airlines push messages to a contracted data-service provider, which delivers to GTAS hosted locally at MCS. A loader parses PAXLST and PNRGOV into a relational store. The risk layer has three engines: Drools business rules, fuzzy watchlist matching, and Neo4j link analysis, with Elasticsearch and Kibana for search and dashboards. Analysts at the MCS Targeting Center review hits and refer passengers to officers on the floor. Key point: GTAS does not connect to airlines itself. That data contract is the lifeline.">
+<!-- 5 -->
+<section class="slide" id="s5" data-t="90" data-notes="Architecture. Airlines push messages to a contracted data-service provider, which delivers to GTAS hosted locally at MCS. A loader parses PAXLST and PNRGOV into a relational store. The risk layer has three engines: Drools business rules, fuzzy watchlist matching, and Neo4j link analysis, with Elasticsearch and Kibana for search and dashboards. Analysts at the MCS Targeting Center review hits and refer passengers to officers on the floor. Key point: GTAS does not connect to airlines itself. That data contract is the lifeline.">
   <div class="eyebrow r">01 · Technical background · the architecture</div>
   <h2 class="r" style="--d:.1s">From airline message to <em>officer at the belt.</em></h2>
   <div class="arch r" style="--d:.25s">
@@ -441,9 +412,9 @@ h2 .red{color:var(--risk)}
   <div class="chips r" style="--d:.5s"><span>Java · Spring</span><span>Angular</span><span>MariaDB</span><span>Drools</span><span>Neo4j</span><span>Elasticsearch · Kibana</span><span>ActiveMQ</span><span>Docker</span><span>On-premise</span></div>
 </section>
 
-<!-- 7 -->
-<section class="slide" id="s7" data-t="90" data-notes="What it does operationally. The heart is the user-defined rule. An analyst encodes targeting knowledge, for example short-notice solo travel, cash payment, a source route, no accommodation. GTAS evaluates every passenger on every flight against every rule, and a match becomes a ranked hit. Around that: fuzzy watchlist matching, link analysis to expose networks, flight and passenger views, historical search, and access control with audit.">
-  <div class="eyebrow r">02 · Existing functionality</div>
+<!-- 6 -->
+<section class="slide" id="s6" data-t="90" data-notes="What it does operationally. The heart is the user-defined rule. An analyst encodes targeting knowledge, for example short-notice solo travel, cash payment, a source route, no accommodation. GTAS evaluates every passenger on every flight against every rule, and a match becomes a ranked hit. Around that: fuzzy watchlist matching, link analysis to expose networks, flight and passenger views, historical search, and access control with audit.">
+  <div class="eyebrow r">02 · Existing functionalities</div>
   <h2 class="r" style="--d:.1s">Analyst knowledge, <em>run against every passenger.</em></h2>
   <div class="grid">
     <div class="card rule r" style="--d:.25s">
@@ -468,9 +439,31 @@ h2 .red{color:var(--risk)}
   <div class="src">Illustrative rule and passenger. Functions per GTAS documentation and WCO materials.</div>
 </section>
 
+<!-- 7 -->
+<section class="slide" id="s7" data-t="75" data-notes="This is how GTAS works operationally, across the life of one inbound flight. PNR arrives from 72 hours out and is refreshed as departure gets closer. At check-in and departure the airline sends API, the verified passport data. GTAS loads both, matches them to the same person, and runs every rule and watchlist. While the aircraft is in the air, the targeting analyst vets the hits and decides who to refer. On arrival the officer intercepts and examines. The last step is in amber deliberately: what the officer found is not systematically fed back into GTAS. I will come back to that in the evaluation.">
+  <div class="eyebrow r">02 · Operational capability · the life of one flight</div>
+  <h2 class="r" style="--d:.1s">From booking to the arrivals hall, <em>before the aircraft lands.</em></h2>
+  <div class="tl">
+    <svg viewBox="0 0 1408 420" preserveAspectRatio="none" aria-hidden="true">
+      <defs><linearGradient id="tlg" x1="0" x2="1"><stop offset="0" stop-color="#3fe0cf"/><stop offset=".8" stop-color="#3fe0cf"/><stop offset="1" stop-color="#f3c76f"/></linearGradient></defs>
+      <line class="track" x1="0" y1="210" x2="1408" y2="210"/>
+      <path class="prog" d="M0 210 H1408"/>
+    </svg>
+    <div class="ev up r" style="left:5%;--d:.3s"><div class="dot"></div><div class="when">T − 72 H</div><div class="what">First <b>PNR</b> push from the airline</div></div>
+    <div class="ev down r" style="left:18%;--d:.6s"><div class="dot"></div><div class="when">T − 24 H → 0</div><div class="what">PNR refreshed as bookings change</div></div>
+    <div class="ev up r" style="left:31%;--d:.9s"><div class="dot"></div><div class="when">CHECK-IN · DEPARTURE</div><div class="what"><b>API</b> passport data sent (PAXLST)</div></div>
+    <div class="ev down key r" style="left:44%;--d:1.2s"><div class="dot"></div><div class="when">WHEELS UP</div><div class="what">GTAS loads, matches API to PNR, runs every rule and watchlist</div></div>
+    <div class="ev up key r" style="left:57%;--d:1.5s"><div class="dot"></div><div class="when">IN FLIGHT</div><div class="what">Ranked <b>hits</b> appear in the analyst queue</div></div>
+    <div class="ev down r" style="left:70%;--d:1.8s"><div class="dot"></div><div class="when">BEFORE LANDING</div><div class="what">Analyst vets hits, refers to officers</div></div>
+    <div class="ev up win r" style="left:81%;--d:2.1s"><div class="dot"></div><div class="when">ON ARRIVAL</div><div class="what">Officer intercepts and examines</div></div>
+    <div class="ev down r" style="left:92%;--d:2.4s"><div class="dot" style="border-color:var(--sand)"></div><div class="when" style="color:var(--sand)">AFTER</div><div class="what">Outcome <b>not fed back</b> into GTAS</div></div>
+  </div>
+  <div class="src">Generic inbound-flight workflow. Timings follow WCO/IATA/ICAO PNR guidelines; actual push schedules vary by carrier.</div>
+</section>
+
 <!-- 8 -->
 <section class="slide" id="s8" data-t="60" data-notes="What it delivered. 85 percent of airlines sending API within months. 24 officers trained across four agencies. Three agencies with direct access after the 2021 MoU. And proof of value in week ten. Its genuine strengths: screening happens before arrival, the data stays in the Maldives, there is no licence cost, and it created a multi-agency habit.">
-  <div class="eyebrow r">02 · Operational capability</div>
+  <div class="eyebrow r">02 · Operational capabilities · evidence from MCS</div>
   <h2 class="r" style="--d:.1s">It worked. <em>Quickly.</em></h2>
   <div class="stats">
     <div class="card stat r" style="--d:.2s"><div class="num"><span data-count="85">85</span><sup>%</sup></div><p>of airlines sending <b>API</b> within months of go-live</p></div>
@@ -489,7 +482,7 @@ h2 .red{color:var(--risk)}
 
 <!-- 9 -->
 <section class="slide" id="s9" data-t="105" data-notes="The critical evaluation, in four lenses. Red means it materially limits effectiveness today. Technically, rules do not learn and the system is batch-only: no board or no-board. Data: EU-origin PNR is blocked, the sea is invisible, IMUGA is unused. Operationally, there is no outcome feedback loop, so you cannot measure whether a rule works. Governance: no comprehensive data protection law yet, and heavy dependence on donors and one contractor. Several of these are MCS's own reported problems, not my opinion.">
-  <div class="eyebrow r">03 · Critical evaluation</div>
+  <div class="eyebrow r">03 · Critical evaluation: drawbacks and limitations</div>
   <h2 class="r" style="--d:.1s">Strong core. <span class="red">Weak edges.</span></h2>
   <div class="legend r" style="--d:.2s"><span class="a">limits effectiveness now</span><span class="b">constrains growth</span></div>
   <div class="matrix">
@@ -522,7 +515,7 @@ h2 .red{color:var(--risk)}
 
 <!-- 10 -->
 <section class="slide" id="s10" data-t="75" data-notes="Three blind spots deserve a spotlight. One: the sea. Many of the largest drug seizures in Maldivian waters involve vessels, and GTAS cannot see a single boat. Two: Europe. MCS reported in 2019 that airlines cannot send PNR for flights from the EU. Some of the highest-volume routes are unscreened on behaviour. Three: the code. I checked this week. The public GTAS repository at CBP returns a 404. The software MCS depends on is no longer openly published. That is a sustainability question the service must answer.">
-  <div class="eyebrow r">03 · Three blind spots</div>
+  <div class="eyebrow r">03 · Critical evaluation · three blind spots</div>
   <h2 class="r" style="--d:.1s">What GTAS <span class="red">cannot see.</span></h2>
   <div class="spots">
     <div class="card spot r" style="--d:.2s">
@@ -553,7 +546,7 @@ h2 .red{color:var(--risk)}
 
 <!-- 11 -->
 <section class="slide" id="s11" data-t="75" data-notes="Now the opportunities. I only propose technology that fixes a named limitation. Rules that do not learn: explainable machine learning that suggests and scores, with a human approving. Hidden networks: graph analytics. Unused declarations: IMUGA cross-checks. Batch only: event streaming and interactive API. Blocked EU PNR: privacy-preserving computation. Analyst overload: a generative AI co-pilot. Identity fraud: biometrics and the ICAO Digital Travel Credential.">
-  <div class="eyebrow r">04 · Disruptive technologies</div>
+  <div class="eyebrow r">04 · Opportunities for improvement through disruptive technologies</div>
   <h2 class="r" style="--d:.1s">Every technology here <em>closes a named gap.</em></h2>
   <div class="map">
     <div class="mrow r" style="--d:.2s"><div class="l">Rules do not learn</div><div class="wire" style="--d:.45s"></div><div class="t">Explainable ML risk scoring <small>learns from MCS seizures</small></div></div>
@@ -568,7 +561,7 @@ h2 .red{color:var(--risk)}
 
 <!-- 12 -->
 <section class="slide" id="s12" data-t="60" data-notes="One idea is uniquely Maldivian. Every visitor already files IMUGA within 96 hours of arrival, including customs questions. GTAS ignores it. Compare what people declare with what their booking shows. Declared a resort, but no hotel and a two-night return. Declared no currency, but paid cash and travels monthly. Mismatches are high-value signals, and the data is already in a government system. Cheapest win in this deck.">
-  <div class="eyebrow r">04 · A Maldives-only advantage</div>
+  <div class="eyebrow r">04 · Opportunities · integrating data the country already holds</div>
   <h2 class="r" style="--d:.1s">The country already asks every visitor. <em>Use the answers.</em></h2>
   <div class="cases">
     <div class="card case r" style="--d:.25s">
@@ -600,7 +593,7 @@ h2 .red{color:var(--risk)}
 
 <!-- 13 -->
 <section class="slide" id="s13" data-t="90" data-notes="The EU problem, solved with cryptography. Instead of moving all European PNR to Male, we move the questions to the data. MCS rules and watchlists are evaluated inside a sealed, attested enclave hosted in the EU, with private set intersection for watchlists. Only matches leave. Everyone else is never exposed. Two honest caveats. This makes an EU agreement easier, it does not replace one, and it needs our data protection bill. And the Court of Justice ruled in 2022 that EU PNR screening must use pre-set criteria, not self-learning models. So on EU data we use transparent rules only.">
-  <div class="eyebrow r">04 · Privacy-preserving PNR</div>
+  <div class="eyebrow r">04 · Opportunities · privacy-enhancing cryptography</div>
   <h2 class="r" style="--d:.1s">Send the <em>questions</em> to the data. Not the data to the questions.</h2>
   <div class="grid">
     <canvas id="enclave" width="1720" height="1000" aria-label="Animation: EU passenger records enter a sealed enclave with MCS rules; only one matched record leaves"></canvas>
@@ -614,9 +607,9 @@ h2 .red{color:var(--risk)}
 </section>
 
 <!-- 14 -->
-<section class="slide" id="s14" data-t="90" data-notes="The proposed future system: a Maldives Traveller Risk Platform. GTAS becomes one component, not the whole answer. Six inputs: air API and PNR, IMUGA, maritime vessel and crew lists, Tradian and ASYCUDA trader data, Immigration border records, and INTERPOL. One risk engine combining transparent rules, explainable models and graph analytics. A human always decides. Outputs to an officer app at every port, to PIU case management, and to partners. The green loop is the most important line on this slide: every search outcome returns to improve the engine.">
+<section class="slide" id="s14" data-t="90" data-notes="The proposed future system keeps GTAS as the core and extends it. GTAS is not replaced; its rules, watchlists and analyst workflow carry over, and it gains new inputs and new engines. Six inputs: air API and PNR, IMUGA, maritime vessel and crew lists, Tradian and ASYCUDA trader data, Immigration border records, and INTERPOL. One risk engine combining transparent rules, explainable models and graph analytics. A human always decides. Outputs to an officer app at every port, to PIU case management, and to partners. The green loop is the most important line on this slide: every search outcome returns to improve the engine.">
   <div class="eyebrow r">05 · Proposed future system</div>
-  <h2 class="r" style="--d:.1s">The Maldives <em>Traveller Risk Platform.</em></h2>
+  <h2 class="r" style="--d:.1s">GTAS at the core of a <em>national traveller risk platform.</em></h2>
   <div class="thesis r" style="--d:.3s">Clear the <em>99%</em> faster.<br>Target the <i>1%</i> better.</div>
   <div class="plat r" style="--d:.3s">
     <svg viewBox="0 0 1408 560" aria-hidden="true">
@@ -638,7 +631,7 @@ h2 .red{color:var(--risk)}
 
 <!-- 15 -->
 <section class="slide" id="s15" data-t="75" data-notes="Delivery in three phases. First stabilise: secure the data contract, upgrade and harden GTAS, close airline gaps, and start recording outcomes. You cannot improve what you do not measure. Then integrate: IMUGA, Immigration and INTERPOL feeds, the outer gateways, an interactive API pilot and the EU privacy pilot. Then intelligence: explainable models, graph analytics, maritime, and the analyst co-pilot. Measured by five numbers on the bottom row.">
-  <div class="eyebrow r">05 · Recommendations and roadmap</div>
+  <div class="eyebrow r">05 · Recommendations</div>
   <h2 class="r" style="--d:.1s">Stabilise. Integrate. <em>Then make it intelligent.</em></h2>
   <div class="road">
     <div class="phase r" style="--d:.2s"><div class="bar"><i style="--d:.3s"></i></div><div class="when">0 – 12 MONTHS</div><h3>Stabilise</h3>
@@ -659,13 +652,13 @@ h2 .red{color:var(--risk)}
 </section>
 
 <!-- 16 -->
-<section class="slide" id="s16" data-t="45" data-notes="To close, three messages. GTAS delivered: MCS went from manual selection to pre-arrival targeting in eighteen months. It has stalled at the edges: Europe, the sea, learning and sustainability. And the answer is a platform, not a patch: integrated, explainable, privacy-preserving, and owned by the Maldives. Underpinned by safeguards: a human decides, rules are audited for bias, and the data protection bill is passed. Thank you. I welcome your questions.">
-  <div class="eyebrow r">Conclusion</div>
+<section class="slide" id="s16" data-t="45" data-notes="To close, my assessment in three lines. Technically and operationally, GTAS is sound and proven: it does pre-arrival screening well, and at MCS it produced an interception within ten weeks. Its limitations are specific: static rules, batch processing, air-only data, blocked EU PNR, no outcome feedback, and dependence on others for the code. My recommendation is to keep GTAS and extend it: stabilise, integrate, then add explainable intelligence. Underpinned by safeguards: a human decides, rules are audited for bias, and the data protection bill is passed. Thank you. I welcome your questions.">
+  <div class="eyebrow r">Conclusion · the assessment in three lines</div>
   <h2 class="r" style="--d:.1s">Three things to take away.</h2>
   <div class="msgs">
-    <div class="msg r" style="--d:.25s"><div class="n">1</div><div><h3>GTAS delivered.</h3><p>Manual selection to pre-arrival targeting in eighteen months, with an interception in week ten.</p></div></div>
-    <div class="msg r" style="--d:.4s"><div class="n">2</div><div><h3>It has stalled at the edges.</h3><p>Europe, the sea, learning from outcomes, and long-term sustainability.</p></div></div>
-    <div class="msg r" style="--d:.55s"><div class="n">3</div><div><h3>The next step is a platform, not a patch.</h3><p>Integrated, explainable, privacy-preserving, and owned by the Maldives. A human always decides.</p></div></div>
+    <div class="msg r" style="--d:.25s"><div class="n">1</div><div><h3>GTAS is technically sound and operationally proven.</h3><p>Pre-arrival API/PNR screening, analyst rules, watchlists and link analysis. At MCS: an interception ten weeks after go-live.</p></div></div>
+    <div class="msg r" style="--d:.4s"><div class="n">2</div><div><h3>Its limitations are real and specific.</h3><p>Static rules, batch processing, air-only data, blocked EU PNR, no outcome feedback, and dependence on others for the code.</p></div></div>
+    <div class="msg r" style="--d:.55s"><div class="n">3</div><div><h3>Keep GTAS. Extend it.</h3><p>Stabilise, integrate, then add explainable intelligence, with privacy built in and a human always deciding.</p></div></div>
   </div>
   <div class="thanks r" style="--d:.8s"><b>Thank you.</b><span>QUESTIONS WELCOME</span></div>
 </section>
@@ -674,7 +667,7 @@ h2 .red{color:var(--risk)}
 
 <div class="notes" id="notes" hidden><b id="notesh">Speaker notes</b><div id="notesb"></div></div>
 <div class="hud"><div class="bar" id="bar"></div>
-  <span id="count">01 / 16</span><span id="timer">00:00</span><span class="sp"></span>
+  <span id="count">01 / 16</span><span id="sec"></span><span id="timer">00:00</span><span class="sp"></span>
   <button id="prev" aria-label="Previous slide">←</button>
   <button id="next" aria-label="Next slide">→</button>
   <button id="nbtn" aria-label="Toggle speaker notes">Notes (N)</button>
@@ -692,6 +685,8 @@ function fit(){const s=Math.min(innerWidth/1600,(innerHeight-44)/900);stage.styl
 addEventListener('resize',fit);fit();
 
 const hooks={};
+const N=['','01 · Introduction and technical background','02 · Existing functionalities and operational capabilities','03 · Critical evaluation: drawbacks and limitations','04 · Opportunities through disruptive technologies','05 · Proposed future system and recommendations','Conclusion'];
+const SEC=[0,1,1,1,1,2,2,2,3,3,4,4,4,5,5,6].map(k=>N[k]);
 function go(i,push=true){
   i=Math.max(0,Math.min(slides.length-1,i));
   if(t0===null&&i!==0)t0=Date.now();
@@ -700,6 +695,7 @@ function go(i,push=true){
   // restart CSS animations on re-entry
   s.querySelectorAll('.r,.prog,.wire,.pnr div,.bar i').forEach(el=>{el.style.animation='none';el.offsetWidth;el.style.animation=''});
   cur=i;
+  document.getElementById('sec').textContent=SEC[i]||'';
   document.getElementById('count').textContent=String(i+1).padStart(2,'0')+' / '+slides.length;
   document.getElementById('bar').style.width=((i+1)/slides.length*100)+'%';
   const t=+s.dataset.t; document.getElementById('notesh').textContent=`Speaker notes · slide ${i+1} · target ${Math.floor(t/60)}:${String(t%60).padStart(2,'0')}`;
@@ -785,12 +781,12 @@ DOC+P:110:111+FX4471902'
 DTM+36:310905'  LOC+91+BRA'
 UNT+14+1'`;
 let ediT=null;
-hooks.s5=()=>{clearTimeout(ediT);const el=document.getElementById('edi');let n=reduce?EDI.length:0;
+hooks.s4=()=>{clearTimeout(ediT);const el=document.getElementById('edi');let n=reduce?EDI.length:0;
   const tick=()=>{const txt=EDI.slice(0,n).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/^([A-Z]{3})/gm,'<span class="seg">$1</span>');el.innerHTML=txt+'<span class="caret"></span>';if(n<EDI.length){n+=3;ediT=setTimeout(tick,22)}};tick()};
 
 /* ---------- S7: rule evaluation ---------- */
 let ruleT=[];
-hooks.s7=()=>{ruleT.forEach(clearTimeout);ruleT=[];const cs=[...document.querySelectorAll('#s7 .cond')],m=document.getElementById('meter'),v=document.getElementById('verdict');
+hooks.s6=()=>{ruleT.forEach(clearTimeout);ruleT=[];const cs=[...document.querySelectorAll('#s6 .cond')],m=document.getElementById('meter'),v=document.getElementById('verdict');
   cs.forEach(c=>c.classList.remove('on'));m.style.width='0';v.classList.remove('on');
   cs.forEach((c,i)=>ruleT.push(setTimeout(()=>{c.classList.add('on');m.style.width=((i+1)/cs.length*100)+'%'},reduce?0:900+i*520)));
   ruleT.push(setTimeout(()=>v.classList.add('on'),reduce?0:900+cs.length*520+200))};
@@ -845,7 +841,7 @@ hooks.s13=()=>{parts=[];if(reduce){for(let i=0;i<40;i++)parts.push({x:330+i*14,y
 const NS='http://www.w3.org/2000/svg';
 function node(g,x,y,w,h,t,s,cls){const n=document.createElementNS(NS,'g');n.setAttribute('class','node '+(cls||''));
   n.innerHTML=`<rect x="${x}" y="${y}" width="${w}" height="${h}" rx="12"/><text x="${x+20}" y="${y+h/2-2}">${t}</text><text class="s" x="${x+20}" y="${y+h/2+20}">${s}</text>`;g.appendChild(n)}
-const ins=[['Air API + PNR','GTAS today',''],['IMUGA declarations','new · cheap win','core'],['Maritime vessel + crew','new · closes sea gap','core'],['Tradian / ASYCUDA','trader links','core'],['Immigration records','entry · exit','core'],['INTERPOL SLTD','stolen documents','core']];
+const ins=[['GTAS core · API + PNR','retained and upgraded',''],['IMUGA declarations','new · cheap win','core'],['Maritime vessel + crew','new · closes sea gap','core'],['Tradian / ASYCUDA','trader links','core'],['Immigration records','entry · exit','core'],['INTERPOL SLTD','stolen documents','core']];
 const gi=document.getElementById('inputs');ins.forEach((d,i)=>{const y=20+i*82;node(gi,0,y,380,66,d[0],d[1],d[2]);const p=document.createElementNS(NS,'path');p.setAttribute('class','flow');p.setAttribute('d',`M380 ${y+33} C430 ${y+33} 430 131 500 131`);gi.prepend(p)});
 const outs=[['Officer app','every port · outcome capture'],['PIU case management','referrals · investigations'],['Partner sharing','INTERPOL · WCO · bilateral']];
 const go2=document.getElementById('outputs');outs.forEach((d,i)=>{const y=190+i*96;node(go2,1010,y,398,78,d[0],d[1],'out');if(i){const p=document.createElementNS(NS,'path');p.setAttribute('class','flow amber');p.setAttribute('d',`M1010 229 C990 229 990 ${y+39} 1010 ${y+39}`);go2.prepend(p)}});
